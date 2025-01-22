@@ -71,7 +71,7 @@ def run_sim(N, T, mu, epsilon, type, plot=False, progress_bar=False):
         raise ValueError(f"Invalid type: {type}")
     
     g = initialize_graph(N)
-    
+    g_init = g.copy()
     for t in range(T):
         # For each node in a random order
         nodes = list(g.nodes())
@@ -118,7 +118,7 @@ def run_sim(N, T, mu, epsilon, type, plot=False, progress_bar=False):
         fig.colorbar(plt.cm.ScalarMappable(cmap=plt.cm.viridis), ax=ax, label='Opinion')    
         plt.show()
         
-    return g
+    return g, g_init
 
 #g = run_sim(2000, 100, epsilon=0.01, mu=0.05, type='RUCM', plot=False, progress_bar=True)
 

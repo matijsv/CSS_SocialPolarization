@@ -1,11 +1,11 @@
 def rho(x):
     '''Function used to guarantee periodic boundary conditions as per eq 1 in paper'''
     assert -1 <= x <= 1, f"x is out of bounds [-1, 1]: {x}"
-    if -1 <= x <= -0.5:
+    if -1 <= x < -0.5:
         return -1
-    if -0.5 < x < 0.5:
+    if -0.5 <= x <= 0.5:
         return 0
-    if 0.5 <= x <= 1:
+    if 0.5 < x <= 1:
         return 1
 
 def UCM_adjust_opinion(i, j, mu, epsilon):

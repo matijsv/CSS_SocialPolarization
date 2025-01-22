@@ -13,7 +13,7 @@ def rho(x):
     
 def alternate_opinion_distance(i, j):
     '''Alternate Opinion distance as per first eq under methods in paper (not labelled)'''
-    return abs(i - j - rho(i - j)) # note that this is not abs val like in the paper, for optimization purposes
+    return abs(i - j - rho(i - j))
 
 def UCM_adjust_opinion(i, j, mu, epsilon):
     '''Adjusts opinions i and j based on the given parameters as per eq 2 & 3 in paper '''
