@@ -31,7 +31,7 @@ def get_graphs(N_runs, N_nodes, time_steps, epsilon, mu):
         
     return all_final_graphs, all_initial_graphs
 
-def get_opinion_hist(N_runs, N_nodes, time_steps, epsilon, mu):
+def get_opinion_hist(N_runs, N_nodes, time_steps, epsilon, mu, exclude_loners=False):
     '''Simulates N_Runs networks and returns an array of arrays of opinions and the average histogram
     
     Args:
@@ -64,6 +64,8 @@ def get_opinion_hist(N_runs, N_nodes, time_steps, epsilon, mu):
     for _ in range(N_runs):
         # Run the simulation. Extract and store opinions
         g, _ = run_sim(N_nodes, T=time_steps, epsilon=epsilon, mu=mu, plot=False, progress_bar=False)
+        if exclude_loners:
+            g.remove_nodes_from(list(nx.isolates(g)))
         opinions = nx.get_node_attributes(g, 'opinion').values()
         all_opinions.append(opinions)
         # Create and store histogram for the current run
