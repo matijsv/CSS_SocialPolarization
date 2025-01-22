@@ -1,6 +1,6 @@
 import networkx as nx 
 import random
-from UCM_graveyard import UCM_adjust_opinion
+from UCM import UCM_adjust_opinion
 import matplotlib.pyplot as plt 
 
 def opinion_dist(i, j):
@@ -33,64 +33,94 @@ def adjust_opinion(i, j, mu, epsilon, repulsion):
     #print('newvals: ', adjust_opinion(i, j, 0.25, 0.2, True))
     
 
-def initialize_graph():
-    g = nx.barabasi_albert_graph(2000, 5)
-    random.seed(42)
-    opinions = {node: random.uniform(0, 1) for node in g.nodes()}
+def initialize_graph(N):
+    '''Creates a Scale-Free graph with N nodes and uniformly random opinions between 0 and 1'''
+    g = nx.barabasi_albert_graph(N, 2) # results in a power law between 2 and 3, as per the paper
+    opinions = {node: random.uniform(0, 1) for node in g.nodes()} # uniformly random opinions between 0 and 1
     nx.set_node_attributes(g, opinions, 'opinion')
     return g
 
-def run_sim(N, T, mu, epsilon, type):
+def run_sim(N, T, mu, epsilon, type, plot=False, progress_bar=False):
     '''
-    N: number of nodes
-    T: number of time steps
-    mu: parameter for adjusting opinions
-    epsilon: threshold for opinion distance
-    type: 'RUCM', 'naive_repulsion', or 'RBCM
+    Runs simulation until T time steps and returns the final graph.
+    
+    Args:
+        N: number of nodes
+        T: number of time steps
+        mu: parameter for adjusting opinions
+        epsilon: threshold for opinion distance
+        type: 'RUCM', 'naive_repulsion', or 'RBCM
+        plot: whether to plot the final graph
+        progress_bar: whether to display a progress bar
+    Returns: 
+        g: final graph
     '''
-    g = initialize_graph()
-
+    
+    assert 0 <= mu <= 1, f"mu out of bounds [0,1]: {mu}"
+    assert 0 <= epsilon <= 1, f"epsilon out of bounds [0,1]: {epsilon}"
+    
+    # Choose the adjustment function based on the type (This is python magic/gore - I'm sorry)
+    # This optimizes the code by avoiding if statements in the loop
+    if type == 'RUCM':
+        adjustment_function = UCM_adjust_opinion
+    elif type == 'naive_repulsion':
+        adjustment_function = lambda i, j, mu, epsilon: adjust_opinion(i, j, mu, epsilon, True)
+    elif type == 'RBCM':
+        adjustment_function = lambda i, j, mu, epsilon: adjust_opinion(i, j, mu, epsilon, False)
+    else:
+        raise ValueError(f"Invalid type: {type}")
+    
+    g = initialize_graph(N)
+    
     for t in range(T):
-        for node in g.nodes(): # for each node
-            if list(g.neighbors(node)): # if node has neighbors (might have been cut off by someone)
+        # For each node in a random order
+        nodes = list(g.nodes())
+        random.shuffle(nodes)
+        for node in nodes:
+            # if node has neighbors (might have been cut off by someone)
+            if list(g.neighbors(node)): 
+                # pick a random neighbor 
                 neighbor = random.choice(list(g.neighbors(node)))
                 i = g.nodes[node]['opinion']
                 j = g.nodes[neighbor]['opinion']
                 
-                if type == 'RUCM':
-                    i_new, j_new = UCM_adjust_opinion(i, j, mu, epsilon)
-                elif type == 'naive_repulsion':
-                    i_new, j_new = adjust_opinion(i, j, mu, epsilon, repulsion=True)
-                elif type == 'RBCM':
-                    i_new, j_new = adjust_opinion(i, j, mu, epsilon, repulsion=False)
-                else:
-                    raise ValueError(f"Invalid type: {type}")
-                
+                # adjust opinions (or not, handled by the adjustment function)
+                i_new, j_new = adjustment_function(i, j, mu, epsilon)
                 g.nodes[node]['opinion'] = i_new
                 g.nodes[neighbor]['opinion'] = j_new
 
+                # rewire if opinions are too far apart
                 if opinion_dist(i_new, j_new) > epsilon:
-                    g.remove_edge(node, neighbor)
                     new_neighbor = random.choice(list(g.nodes()))
-                    # ensure new neighbor is not the same as the old one or the node itself
-                    while new_neighbor == neighbor or new_neighbor == node: 
+                    # ensure new neighbor is not the same as the old one, the node itself, or one of the node's current neighbors
+                    while new_neighbor == node or new_neighbor in g.neighbors(node): 
                         new_neighbor = random.choice(list(g.nodes()))
+                    g.remove_edge(node, neighbor)
                     g.add_edge(node, new_neighbor)
-                
-    opinions = nx.get_node_attributes(g, 'opinion')
-    pos = nx.spring_layout(g)
+        
+        if progress_bar:
+            progress = (t + 1) / T
+            bar_length = 60
+            block = int(round(bar_length * progress))
+            text = f"\rProgress: [{'#' * block + '-' * (bar_length - block)}] {progress * 100:.2f}%"
+            print(text, end="")
     
-    fig, ax = plt.subplots(figsize=(12, 12))
+    if plot:
+        opinions = nx.get_node_attributes(g, 'opinion')
+        pos = nx.spring_layout(g)
     
-    # Draw nodes with color based on opinion
-    nx.draw_networkx_nodes(g, pos, node_color=list(opinions.values()), cmap=plt.cm.viridis, node_size=10)
-    nx.draw_networkx_edges(g, pos, alpha=0.3)
+        fig, ax = plt.subplots(figsize=(8, 8))
     
-    fig.colorbar(plt.cm.ScalarMappable(cmap=plt.cm.viridis), ax=ax, label='Opinion')
-    plt.show()
+        # Draw nodes with color based on opinion
+        nx.draw_networkx_nodes(g, pos, node_color=list(opinions.values()), cmap=plt.cm.viridis, node_size=10)
+        nx.draw_networkx_edges(g, pos, alpha=0.3)
+    
+        fig.colorbar(plt.cm.ScalarMappable(cmap=plt.cm.viridis), ax=ax, label='Opinion')    
+        plt.show()
+        
+    return g
 
-run_sim(2000, 100, epsilon=0.1, mu=0.05, type='RUCM')
-
+#g = run_sim(2000, 100, epsilon=0.01, mu=0.05, type='RUCM', plot=False, progress_bar=True)
 
 #print(alternate_opinion_distance(0.1, 0.6))
 
@@ -98,6 +128,3 @@ run_sim(2000, 100, epsilon=0.1, mu=0.05, type='RUCM')
 # 10^5 time steps
 # 0,0.5 param space 
 # 5 repeats
-
-
-    
