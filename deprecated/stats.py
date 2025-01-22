@@ -1,5 +1,5 @@
 from matplotlib import pyplot as plt
-from main import run_sim
+from simulation import run_sim
 import networkx as nx
 from scipy.signal import find_peaks
 import numpy as np
@@ -21,11 +21,11 @@ def plot_graphs(graphs, show=True):
     if show:
         plt.show()
     
-def run_stats(N_Nodes, T, N_Runs, epsilon, mu, type):
+def run_stats(N_Nodes, T, N_Runs, epsilon, mu):
     all_histograms = []
     all_opinions = []
     for _ in range(N_Runs):
-        g, g_init = run_sim(N_Nodes, T, epsilon=epsilon, mu=mu, type=type, plot=False, progress_bar=True)
+        g, g_init = run_sim(N_Nodes, T, epsilon=epsilon, mu=mu, plot=False, progress_bar=True)
         if N_Runs == 1:
             plot_graphs([g, g_init], show=False)
         opinions = nx.get_node_attributes(g, 'opinion').values()
@@ -41,9 +41,10 @@ def run_stats(N_Nodes, T, N_Runs, epsilon, mu, type):
     peaks, peak_index = find_peaks(average_histogram, distance=10)
     num_peaks = len(peaks)
     
+    # MAKE ALL_OPINIONS AN ARRAY OF ARRAYS
     return num_peaks, all_opinions, g
 
-num_peaks, all_opinions, g = run_stats(4000, 100, 1, 0.1, 0.05, 'RUCM')
+num_peaks, all_opinions, g = run_stats(2000, 100, 1, 0.1, 0.05, 'RUCM')
 print(f'Number of peaks in the averaged histogram: {num_peaks}')
     
 
