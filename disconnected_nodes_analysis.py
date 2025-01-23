@@ -64,7 +64,7 @@ def plot_disconnected_nodes(epsilon_values, disconnected_nodes):
     plt.legend()
     plt.show()
 
-# Example usage
+# use
 if __name__ == "__main__":
     # Parameters
     N_RUNS = 5           # Number of simulations per epsilon value
