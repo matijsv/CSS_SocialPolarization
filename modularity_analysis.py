@@ -3,7 +3,7 @@ import numpy as np
 import networkx as nx
 from utils import get_graphs
 from networkx.algorithms.community import modularity
-from networkx.algorithms.community import greedy_modularity_communities
+from networkx.algorithms.community import greedy_modularity_communities 
 
 def calculate_modularity(graph):
     """
@@ -70,7 +70,7 @@ def plot_modularity(epsilon_values, modularities):
     plt.legend()
     plt.show()
 
-# Example usage
+# use
 if __name__ == "__main__":
     # Parameters
     N_RUNS = 5           # Number of simulations per epsilon value
