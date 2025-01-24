@@ -2,6 +2,7 @@ from networkx.algorithms.community import greedy_modularity_communities
 from utils import get_graphs
 import matplotlib.pyplot as plt
 import numpy as np
+import networkx as nx
 
 def count_communities(graph):
     """
@@ -13,7 +14,9 @@ def count_communities(graph):
         int: The number of communities in the graph.
     """
     # Use the greedy modularity communities detection algorithm
-    communities = greedy_modularity_communities(graph)
+    # Remove isolates (nodes with no edges) from the graph
+    graph.remove_nodes_from(list(nx.isolates(graph)))
+    communities = greedy_modularity_communities(graph, resolution=0.1, best_n=7)
     # Count the number of communities
     num_communities = len(communities)
     return num_communities
@@ -72,8 +75,7 @@ N_runs = 5
 N_nodes = 2000
 time_steps = 100
 mu = 0.25
-epsilon_values = np.linspace(0.0, 1, num=11)
+epsilon_values =  np.linspace(0.0, 0.5, num=5)
 num_communities = analyze_communities(N_runs, N_nodes, time_steps, mu, epsilon_values)
 
 plot_communities(epsilon_values, num_communities)
-    
