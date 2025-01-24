@@ -63,7 +63,8 @@ def get_opinion_hist(N_runs, N_nodes, time_steps, epsilon, mu, exclude_loners=Fa
     
     for _ in range(N_runs):
         # Run the simulation. Extract and store opinions
-        g, _ = run_sim(N_nodes, T=time_steps, epsilon=epsilon, mu=mu, plot=False, progress_bar=False)
+        g, _ = run_sim(N_nodes, T=time_steps, epsilon=epsilon, mu=mu, plot=False, progress_bar=True)
+        isolated = len(list(nx.isolates(g)))
         if exclude_loners:
             g.remove_nodes_from(list(nx.isolates(g)))
         opinions = nx.get_node_attributes(g, 'opinion').values()
@@ -74,4 +75,4 @@ def get_opinion_hist(N_runs, N_nodes, time_steps, epsilon, mu, exclude_loners=Fa
         
     avg_histogram = np.mean(all_histograms, axis=0) # Average the histograms
     
-    return all_opinions, avg_histogram
+    return all_opinions, avg_histogram, isolated
