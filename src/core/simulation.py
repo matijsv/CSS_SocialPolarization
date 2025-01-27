@@ -1,6 +1,8 @@
+''' Core model functions '''
+
 import random
-import networkx as nx 
-import matplotlib.pyplot as plt 
+import networkx as nx
+import matplotlib.pyplot as plt
 
 def rho(x):
     '''Function used to guarantee periodic boundary conditions as per eq 1 in paper'''
@@ -14,33 +16,33 @@ def rho(x):
 
 def UCM_adjust_opinion(i, j, mu, epsilon):
     '''Adjusts opinions i and j based on the given parameters as per eq 2 & 3 in paper '''
-    
+
     assert 0 <= i <= 1, f"Opinion i is out of bounds: {i}"
     assert 0 <= j <= 1, f"Opinion j is out of bounds: {j}"
-    
+
     i_min_j = i - j
     alt_dist = i_min_j- rho(i - j)
     abs_alt_dist = abs(alt_dist)
     j_min_i = j - i
-    
-    if abs_alt_dist < epsilon: 
+
+    if abs_alt_dist < epsilon:
         i_new = i + mu * j_min_i
         j_new = j + mu * i_min_j
-        
+
     if abs_alt_dist >= epsilon:
         i_new = i - mu * (j_min_i - rho(j - i))
         j_new = j - mu * alt_dist
-        
+
         # ensure i_new and j_new are within [0, 1] in case of extreme repulsion
         i_new = max(0, min(1, i_new))
         j_new = max(0, min(1, j_new))
-        
+
     return i_new, j_new
 
 def initialize_graph(N):
     '''Creates a Scale-Free graph with N nodes and uniformly random opinions between 0 and 1'''
     g = nx.barabasi_albert_graph(N, 2) # results in a power law between 2 and 3, as per the paper
-    opinions = {node: random.uniform(0, 1) for node in g.nodes()} # uniformly random opinions between 0 and 1
+    opinions = {node: random.uniform(0, 1) for node in g.nodes()} # uniformly random opinions [0,1]
     nx.set_node_attributes(g, opinions, 'opinion')
     return g
 
@@ -62,7 +64,7 @@ def run_sim(N, T, mu, epsilon, plot=False, progress_bar=False):
     '''
     assert 0 <= mu <= 1, f"mu out of bounds [0,1]: {mu}"
     assert 0 <= epsilon <= 1, f"epsilon out of bounds [0,1]: {epsilon}"
-    
+
     g = initialize_graph(N)
     g_init = g.copy()
     for t in range(T):
@@ -76,7 +78,7 @@ def run_sim(N, T, mu, epsilon, plot=False, progress_bar=False):
                 neighbor = random.choice(list(g.neighbors(node)))
                 i = g.nodes[node]['opinion']
                 j = g.nodes[neighbor]['opinion']
-                
+
                 # adjust opinions (or not, handled by the adjustment function)
                 i_new, j_new = UCM_adjust_opinion(i, j, mu, epsilon)
                 g.nodes[node]['opinion'] = i_new
@@ -86,29 +88,29 @@ def run_sim(N, T, mu, epsilon, plot=False, progress_bar=False):
                 if abs(i_new - j_new) > epsilon:
                     new_neighbor = random.choice(list(g.nodes()))
                     # ensure new neighbor is not the same as the old one, the node itself, or one of the node's current neighbors
-                    while new_neighbor == node or new_neighbor in g.neighbors(node): 
+                    while new_neighbor == node or new_neighbor in g.neighbors(node):
                         new_neighbor = random.choice(list(g.nodes()))
                     g.remove_edge(node, neighbor)
                     g.add_edge(node, new_neighbor)
-        
+
         if progress_bar:
             progress = (t + 1) / T
             bar_length = 60
             block = int(round(bar_length * progress))
             text = f"\rProgress: [{'#' * block + '-' * (bar_length - block)}] {progress * 100:.2f}%"
             print(text, end="")
-    
+
     if plot:
         opinions = nx.get_node_attributes(g, 'opinion')
         pos = nx.spring_layout(g)
-    
+
         fig, ax = plt.subplots(figsize=(8, 8))
-    
+
         # Draw nodes with color based on opinion
         nx.draw_networkx_nodes(g, pos, node_color=list(opinions.values()), cmap=plt.cm.viridis, node_size=10)
         nx.draw_networkx_edges(g, pos, alpha=0.3)
-    
-        fig.colorbar(plt.cm.ScalarMappable(cmap=plt.cm.viridis), ax=ax, label='Opinion')    
+
+        fig.colorbar(plt.cm.ScalarMappable(cmap=plt.cm.viridis), ax=ax, label='Opinion')
         plt.show()
-        
+
     return g, g_init

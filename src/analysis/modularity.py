@@ -1,9 +1,11 @@
-import numpy as np
+'''Groups functions for analyzing the number of communities and modularity of graphs.'''
+
 import csv
+import numpy as np
 import networkx as nx
-from src.core.utils import get_graphs
 from networkx.algorithms.community import modularity
-from networkx.algorithms.community import greedy_modularity_communities 
+from networkx.algorithms.community import greedy_modularity_communities
+from src.core.utils import get_graphs
 
 def count_communities(graph):
     """
@@ -22,13 +24,14 @@ def count_communities(graph):
     num_communities = len(communities)
     return num_communities
 
-def analyze_communities(N_runs, N_nodes, time_steps, mu, epsilon_values):
+def analyze_communities(n_runs, n_nodes, time_steps, mu, epsilon_values):
     """
-    Analyzes and calculates the average number of communities in graphs for a range of epsilon values.
+    Analyzes and calculates the average number of communities 
+    in graphs for a range of epsilon values.
 
     Args:
-        N_runs (int): Number of runs for each epsilon value.
-        N_nodes (int): Number of nodes in the graph.
+        n_runs (int): Number of runs for each epsilon value.
+        n_nodes (int): Number of nodes in the graph.
         time_steps (int): Number of time steps in the simulation.
         mu (float): Parameter for adjusting opinions.
         epsilon_values (list): Range of epsilon values to test.
@@ -41,18 +44,18 @@ def analyze_communities(N_runs, N_nodes, time_steps, mu, epsilon_values):
     for epsilon in epsilon_values:
         print(f"Analyzing communities for epsilon = {epsilon:.3f}")
         total_communities = 0
-        
+
         # Generate graphs for the given epsilon
-        final_graphs, _ = get_graphs(N_runs, N_nodes, time_steps, epsilon, mu)
+        final_graphs, _ = get_graphs(n_runs, n_nodes, time_steps, epsilon, mu)
 
         # Count communities for each graph and accumulate the total
         for graph in final_graphs:
             total_communities += count_communities(graph)
-        
+
         # Compute the average number of communities for this epsilon
-        avg_communities_value = total_communities / N_runs
-        avg_communities.append(avg_communities_value)   
-    
+        avg_communities_value = total_communities / n_runs
+        avg_communities.append(avg_communities_value)
+
     return avg_communities
 
 def calculate_modularity(graph):
@@ -74,13 +77,13 @@ def calculate_modularity(graph):
     mod_value = modularity(graph, communities)
     return mod_value
 
-def analyze_modularity(N_runs, N_nodes, time_steps, mu, epsilon_values):
+def analyze_modularity(n_runs, n_nodes, time_steps, mu, epsilon_values):
     """
     Analyzes and calculates the average modularity of graphs for a range of epsilon values.
 
     Args:
-        N_runs (int): Number of runs for each epsilon value.
-        N_nodes (int): Number of nodes in the graph.
+        n_runs (int): Number of runs for each epsilon value.
+        n_nodes (int): Number of nodes in the graph.
         time_steps (int): Number of time steps in the simulation.
         mu (float): Parameter for adjusting opinions.
         epsilon_values (list or numpy.ndarray): Range of epsilon values to test.
@@ -93,29 +96,29 @@ def analyze_modularity(N_runs, N_nodes, time_steps, mu, epsilon_values):
     for epsilon in epsilon_values:
         print(f"Analyzing modularity for epsilon = {epsilon:.3f}")
         total_modularity = 0
-        
+
         # Generate graphs for the given epsilon
-        final_graphs, _ = get_graphs(N_runs, N_nodes, time_steps, epsilon, mu)
+        final_graphs, _ = get_graphs(n_runs, n_nodes, time_steps, epsilon, mu)
 
         # Calculate modularity for each graph and accumulate the total
         for graph in final_graphs:
             total_modularity += calculate_modularity(graph)
-        
+
         # Compute the average modularity for this epsilon
-        avg_modularity = total_modularity / N_runs
+        avg_modularity = total_modularity / n_runs
         avg_modularities.append(avg_modularity)
-    
+
     return avg_modularities
 
 #Func for generating the heatmap
-def generate_modularity_matrix(N_runs, N_nodes, time_steps, epsilon_range, mu_range, output_file):
+def generate_modularity_matrix(n_runs, n_nodes, time_steps, epsilon_range, mu_range, output_file):
     """
     Generates a 51x51 matrix of average modularity values for combinations of epsilon and mu,
     and saves the result to a CSV file.
 
     Args:
-        N_runs (int): Number of simulations per parameter combination.
-        N_nodes (int): Number of nodes in each graph.
+        n_runs (int): Number of simulations per parameter combination.
+        n_nodes (int): Number of nodes in each graph.
         time_steps (int): Number of time steps.
         epsilon_range (tuple): Range of epsilon values (start, end, steps).
         mu_range (tuple): Range of mu values (start, end, steps).
@@ -131,17 +134,17 @@ def generate_modularity_matrix(N_runs, N_nodes, time_steps, epsilon_range, mu_ra
     for epsilon in epsilon_values:
         row = []
         print(f"Analyzing modularity for epsilon = {epsilon:.3f}")
-        
+
         for mu in mu_values:
             print(f"  Analyzing modularity for mu = {mu:.3f}")
-            
+
             # Analyze modularity for the given epsilon and mu
-            avg_modularities = analyze_modularity(N_runs, N_nodes, time_steps, mu, [epsilon])
+            avg_modularities = analyze_modularity(n_runs, n_nodes, time_steps, mu, [epsilon])
             row.append(avg_modularities[0])  # Extract single result for epsilon
-        
+
         # Append the row to the matrix
         matrix.append(row)
-    
+
     # Save the matrix to a CSV file
     with open(output_file, mode='w', newline='') as file:
         writer = csv.writer(file)

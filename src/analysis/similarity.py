@@ -1,3 +1,5 @@
+'''Groups functions for analyzing the similarity of opinions between neighbors in a graph.'''
+
 import numpy as np
 import pandas as pd
 from src.core.utils import get_graphs
@@ -19,7 +21,7 @@ def compute_neighbor_similarity(graph):
         for neighbor in graph.neighbors(node):
             opinion_node = graph.nodes[node]['opinion']
             opinion_neighbor = graph.nodes[neighbor]['opinion']
-            total_similarity += 1 - abs(opinion_node - opinion_neighbor)  # Similarity is 1 - distance
+            total_similarity += 1 - abs(opinion_node - opinion_neighbor) # Similarity = 1 - distance
             total_edges += 1
 
     if total_edges == 0:  # Avoid division by zero
@@ -27,13 +29,13 @@ def compute_neighbor_similarity(graph):
 
     return total_similarity / total_edges
 
-def analyze_neighbor_similarity(N_runs, N_nodes, time_steps, mu, epsilon_values):
+def analyze_neighbor_similarity(n_runs, n_nodes, time_steps, mu, epsilon_values):
     """
     Analyzes and calculates the average neighbor similarity for a range of epsilon values.
 
     Args:
-        N_runs (int): Number of runs for each epsilon value.
-        N_nodes (int): Number of nodes in the graph.
+        n_runs (int): Number of runs for each epsilon value.
+        n_nodes (int): Number of nodes in the graph.
         time_steps (int): Number of time steps in the simulation.
         mu (float): Parameter for adjusting opinions.
         epsilon_values (list or numpy.ndarray): Range of epsilon values to test.
@@ -48,26 +50,26 @@ def analyze_neighbor_similarity(N_runs, N_nodes, time_steps, mu, epsilon_values)
         total_similarity = 0
 
         # Generate graphs for the given epsilon
-        final_graphs, _ = get_graphs(N_runs, N_nodes, time_steps, epsilon, mu)
+        final_graphs, _ = get_graphs(n_runs, n_nodes, time_steps, epsilon, mu)
 
         # Calculate neighbor similarity for each graph and accumulate the total
         for graph in final_graphs:
             total_similarity += compute_neighbor_similarity(graph)
 
         # Compute the average similarity for this epsilon
-        avg_similarity = total_similarity / N_runs
+        avg_similarity = total_similarity / n_runs
         avg_similarities.append(avg_similarity)
 
     return avg_similarities
 
-def opinion_matrix_experiment(N_runs, N_nodes, time_steps, mu_values, epsilon_values, output_file):
+def opinion_matrix_experiment(n_runs, n_nodes, time_steps, mu_values, epsilon_values, output_file):
     """
     Investigates the average neighbor similarity by varying both epsilon and mu.
     Saves results as a 51x51 matrix to a CSV file.
 
     Args:
-        N_runs (int): Number of simulation runs per parameter combination.
-        N_nodes (int): Number of nodes in the graph.
+        n_runs (int): Number of simulation runs per parameter combination.
+        n_nodes (int): Number of nodes in the graph.
         time_steps (int): Number of time steps for each simulation.
         mu_values (list or np.ndarray): Values of mu to investigate.
         epsilon_values (list or np.ndarray): Values of epsilon to investigate.
@@ -79,7 +81,7 @@ def opinion_matrix_experiment(N_runs, N_nodes, time_steps, mu_values, epsilon_va
         for j, mu in enumerate(mu_values):       # Inner loop: mu (vertical)
             print(f"Running simulation for epsilon={epsilon:.3f}, mu={mu:.3f}")
             # Analyze neighbor similarity
-            avg_similarity = analyze_neighbor_similarity(N_runs, N_nodes, time_steps, mu, [epsilon])[0]
+            avg_similarity = analyze_neighbor_similarity(n_runs, n_nodes, time_steps, mu, [epsilon])[0]
             results_matrix[j, i] = avg_similarity  # Store result in matrix
 
     # Save results to CSV

@@ -1,43 +1,47 @@
-from src.core.simulation import run_sim
+''' Functions for accessing simulation results '''
+
 import networkx as nx
 import numpy as np
+from src.core.simulation import run_sim
 
-def get_graphs(N_runs, N_nodes, time_steps, epsilon, mu):
+
+def get_graphs(n_runs, n_nodes, time_steps, epsilon, mu):
     '''Simulates N_Runs networks and returns the final and initial graphs
     
     Args:
-        N_runs: (int) number of runs
-        N_nodes: (int) number of nodes
+        n_runs: (int) number of runs
+        n_nodes: (int) number of nodes
         time_steps: (int) number of time steps
         epsilon: (float bounds: [0,1]) threshold for opinion distance 
         mu: (float bounds: [0,1]) parameter for adjusting opinions
     Returns:
         tuple containing:
-            all_final_graphs: list of final graphs, length N_runs
-            all_initial_graphs: list of initial graphs, length N_runs
+            all_final_graphs: list of final graphs, length n_runs
+            all_initial_graphs: list of initial graphs, length n_runs
     '''
     all_final_graphs = []
     all_initial_graphs = []
-    for _ in range(N_runs):
-        g_final, g_init = run_sim(N_nodes, T=time_steps, epsilon=epsilon, mu=mu, plot=False, progress_bar=False)
+    for _ in range(n_runs):
+        g_final, g_init = run_sim(n_nodes, T=time_steps, epsilon=epsilon,
+                                  mu=mu, plot=False, progress_bar=False)
         all_final_graphs.append(g_final)
         all_initial_graphs.append(g_init)
-        
+
     return all_final_graphs, all_initial_graphs
 
-def get_opinion_hist(N_runs, N_nodes, time_steps, epsilon, mu, exclude_loners=False):
+def get_opinion_hist(n_runs, n_nodes, time_steps, epsilon, mu, exclude_loners=False):
     '''Simulates N_Runs networks and returns an array of arrays of opinions
     and the average distribution histogram
     
     Args:
-        N_runs: (int) number of runs
-        N_nodes: (int) number of nodes
+        n_runs: (int) number of runs
+        n_nodes: (int) number of nodes
         time_steps: (int) number of time steps
         epsilon: (float bounds: [0,1]) threshold for opinion distance 
         mu: (float bounds: [0,1]) parameter for adjusting opinions
     Returns:
         tuple containing:
-            all_opinions: array of arrays of opinions, shape (N_runs, N_nodes)
+            all_opinions: array of arrays of opinions, shape (n_runs, n_nodes)
             average_histogram: average histogram of opinions, length 100
     
     Example usage:
@@ -56,10 +60,10 @@ def get_opinion_hist(N_runs, N_nodes, time_steps, epsilon, mu, exclude_loners=Fa
     '''
     all_histograms = []
     all_opinions = []
-    
-    for _ in range(N_runs):
+
+    for _ in range(n_runs):
         # Run the simulation. Extract and store opinions
-        g, _ = run_sim(N_nodes, T=time_steps, epsilon=epsilon, mu=mu, plot=False, progress_bar=True)
+        g, _ = run_sim(n_nodes, T=time_steps, epsilon=epsilon, mu=mu, plot=False, progress_bar=True)
         isolated = len(list(nx.isolates(g)))
         if exclude_loners:
             g.remove_nodes_from(list(nx.isolates(g)))
@@ -68,7 +72,7 @@ def get_opinion_hist(N_runs, N_nodes, time_steps, epsilon, mu, exclude_loners=Fa
         # Create and store histogram for the current run
         hist, _ = np.histogram(list(opinions), bins=100, range=(0, 1))
         all_histograms.append(hist)
-        
+
     avg_histogram = np.mean(all_histograms, axis=0) # Average the histograms
-    
+
     return all_opinions, avg_histogram, isolated
