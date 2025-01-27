@@ -22,8 +22,7 @@ def get_graphs(n_runs, n_nodes, time_steps, epsilon, mu):
     all_final_graphs = []
     all_initial_graphs = []
     for _ in range(n_runs):
-        g_final, g_init = run_sim(n_nodes, T=time_steps, epsilon=epsilon,
-                                  mu=mu, plot=False, progress_bar=False)
+        g_final, g_init = run_sim(n_nodes, T=time_steps, epsilon=epsilon, mu=mu)
         all_final_graphs.append(g_final)
         all_initial_graphs.append(g_init)
 
@@ -63,7 +62,7 @@ def get_opinion_hist(n_runs, n_nodes, time_steps, epsilon, mu, exclude_loners=Fa
 
     for _ in range(n_runs):
         # Run the simulation. Extract and store opinions
-        g, _ = run_sim(n_nodes, T=time_steps, epsilon=epsilon, mu=mu, plot=False, progress_bar=True)
+        g, _ = run_sim(n_nodes, T=time_steps, epsilon=epsilon, mu=mu)
         isolated = len(list(nx.isolates(g)))
         if exclude_loners:
             g.remove_nodes_from(list(nx.isolates(g)))
