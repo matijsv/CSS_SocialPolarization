@@ -6,15 +6,18 @@ from utils import get_graphs
 from networkx.algorithms.community import modularity
 from networkx.algorithms.community import greedy_modularity_communities 
 
-def calculate_modularity(graph):
+def calculate_modularity(graph, exclude_isolates=True):
     """
     Calculates the modularity of a graph based on community detection.
 
     Args:
         graph (networkx.Graph): The graph for which to calculate modularity.
+        exclude_isolates (boolean): Whether to exclude isolated nodes.
     Returns:
         float: The modularity of the graph.
     """
+    if exclude_isolates:
+        graph.remove_nodes_from(list(nx.isolates(graph)))
     # Use the greedy modularity communities detection algorithm
     communities = greedy_modularity_communities(graph)
     # Calculate modularity
