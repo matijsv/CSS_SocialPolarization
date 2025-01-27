@@ -1,12 +1,6 @@
-from simulation import run_sim
+from src.core.simulation import run_sim
 import networkx as nx
 import numpy as np
-
-# DEFAULT PARAMETERS
-# N_RUNS = 5
-# N_NODES = 2000
-# TIME_STEPS = 100
-# MU = 0.25
 
 def get_graphs(N_runs, N_nodes, time_steps, epsilon, mu):
     '''Simulates N_Runs networks and returns the final and initial graphs
@@ -32,7 +26,8 @@ def get_graphs(N_runs, N_nodes, time_steps, epsilon, mu):
     return all_final_graphs, all_initial_graphs
 
 def get_opinion_hist(N_runs, N_nodes, time_steps, epsilon, mu, exclude_loners=False):
-    '''Simulates N_Runs networks and returns an array of arrays of opinions and the average histogram
+    '''Simulates N_Runs networks and returns an array of arrays of opinions
+    and the average distribution histogram
     
     Args:
         N_runs: (int) number of runs
@@ -53,7 +48,8 @@ def get_opinion_hist(N_runs, N_nodes, time_steps, epsilon, mu, exclude_loners=Fa
         import matplotlib.pyplot as plt
 
         plt.figure(figsize=(10, 6))
-        plt.bar(np.linspace(0, 1, len(average_histogram)), average_histogram, width=0.01, align='center')
+        plt.bar(np.linspace(0, 1, len(average_histogram)),
+            average_histogram, width=0.01, align='center')
         plt.xlabel('Opinion')
         plt.ylabel('Frequency')
         plt.show()

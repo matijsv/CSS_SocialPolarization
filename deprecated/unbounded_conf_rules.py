@@ -1,5 +1,4 @@
 
-
 def rho(x):
     '''Function used to guarantee periodic boundary conditions as per eq 1 in paper'''
     

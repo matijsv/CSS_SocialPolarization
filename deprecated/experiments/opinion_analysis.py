@@ -1,8 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 import networkx as nx
-from utils import get_graphs
+from src.core.utils import get_graphs
 
 def compute_neighbor_similarity(graph):
     """
@@ -79,41 +78,16 @@ def plot_neighbor_similarity(epsilon_values, similarities):
     plt.legend()
     plt.show()
 
-def opinion_matrix_experiment(N_runs, N_nodes, time_steps, mu_values, epsilon_values, output_file):
-    """
-    Investigates the average neighbor similarity by varying both epsilon and mu.
-    Saves results as a 51x51 matrix to a CSV file.
-
-    Args:
-        N_runs (int): Number of simulation runs per parameter combination.
-        N_nodes (int): Number of nodes in the graph.
-        time_steps (int): Number of time steps for each simulation.
-        mu_values (list or np.ndarray): Values of mu to investigate.
-        epsilon_values (list or np.ndarray): Values of epsilon to investigate.
-        output_file (str): File path to save the CSV results.
-    """
-    results_matrix = np.zeros((len(mu_values), len(epsilon_values)))  # Initialize matrix
-
-    for i, epsilon in enumerate(epsilon_values):  # Outer loop: epsilon (horizontal)
-        for j, mu in enumerate(mu_values):       # Inner loop: mu (vertical)
-            print(f"Running simulation for epsilon={epsilon:.3f}, mu={mu:.3f}")
-            # Analyze neighbor similarity
-            avg_similarity = analyze_neighbor_similarity(N_runs, N_nodes, time_steps, mu, [epsilon])[0]
-            results_matrix[j, i] = avg_similarity  # Store result in matrix
-
-    # Save results to CSV
-    df = pd.DataFrame(results_matrix, index=mu_values, columns=epsilon_values)
-    df.to_csv(output_file)
-    print(f"Results saved to {output_file}")
-
 if __name__ == "__main__":
     # Parameters
-    N_RUNS = 5               # Number of runs per parameter combination
-    N_NODES = 2000           # Number of nodes in each graph
-    TIME_STEPS = 100         # Number of time steps per simulation
-    MU_VALUES = np.linspace(0, 0.5, 51)       # 51 values for mu (0 to 0.5)
-    EPSILON_VALUES = np.linspace(0, 0.5, 51)  # 51 values for epsilon (0 to 0.5)
-    OUTPUT_FILE = "neighbor_opinion_similarity_matrix.csv"
+    N_RUNS = 5           # Number of simulations per epsilon value
+    N_NODES = 2000       # Number of nodes in each graph
+    TIME_STEPS = 100     # Number of time steps
+    MU = 0.25            # Adjustment parameter
+    EPSILON_VALUES = np.linspace(0, 1, 20)  # Range of epsilon values (0 to 1 in 20 steps)
 
-    # Run the experiment
-    opinion_matrix_experiment(N_RUNS, N_NODES, TIME_STEPS, MU_VALUES, EPSILON_VALUES, OUTPUT_FILE)
+    # Analyze neighbor similarity for varying epsilon values
+    similarities = analyze_neighbor_similarity(N_RUNS, N_NODES, TIME_STEPS, MU, EPSILON_VALUES)
+
+    # Plot the results
+    plot_neighbor_similarity(EPSILON_VALUES, similarities)

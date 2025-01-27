@@ -1,4 +1,4 @@
-import utils
+import src.core.utils as utils
 import numpy as np
 from scipy.signal import find_peaks
 

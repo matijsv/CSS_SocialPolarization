@@ -1,7 +1,6 @@
-import utils
-import UCM
-import simulation
-import distribution
+import src.core.utils as utils
+import src.core.simulation as simulation
+import src.analysis.distribution as distribution
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd

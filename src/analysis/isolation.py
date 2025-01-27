@@ -1,8 +1,7 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import networkx as nx
 import csv
-from utils import get_graphs
+from src.core.utils import get_graphs
 
 def count_disconnected_nodes(graph):
     """
@@ -48,41 +47,7 @@ def analyze_disconnected_nodes(N_runs, N_nodes, time_steps, mu, epsilon_values):
     
     return avg_disconnected_nodes
 
-def plot_disconnected_nodes(epsilon_values, disconnected_nodes):
-    """
-    Plots the number of disconnected nodes as a function of epsilon.
-
-    Args:
-        epsilon_values (list or numpy.ndarray): Epsilon values (x-axis).
-        disconnected_nodes (list): Number of disconnected nodes (y-axis).
-    """
-    plt.figure(figsize=(10, 6))
-    plt.plot(epsilon_values, disconnected_nodes, marker='o', linestyle='-', color='b', label='Disconnected Nodes')
-    plt.xlabel('Epsilon')
-    plt.ylabel('Number of Disconnected Nodes')
-    plt.title('Disconnected Nodes vs Epsilon')
-    plt.grid(True)
-    plt.legend()
-    plt.show()
-
-# use
-if __name__ == "__main__":
-    # Parameters
-    N_RUNS = 5           # Number of simulations per epsilon value
-    N_NODES = 2000       # Number of nodes in each graph
-    TIME_STEPS = 100     # Number of time steps
-    MU = 0.25            # Adjustment parameter
-    EPSILON_VALUES = np.linspace(0, 1, 20)  # Range of epsilon values (0 to 1 in 20 steps)
-
-    # Analyze disconnected nodes for varying epsilon values
-    disconnected_nodes = analyze_disconnected_nodes(N_RUNS, N_NODES, TIME_STEPS, MU, EPSILON_VALUES)
-
-    # Plot the results
-    plot_disconnected_nodes(EPSILON_VALUES, disconnected_nodes)
-
-
-#Code tro generate the heatmap
-
+#Func for generating the heatmap
 def generate_disconnected_nodes_matrix(N_runs, N_nodes, time_steps, epsilon_range, mu_range, output_file):
     """
     Generates a 51x51 matrix of average disconnected nodes for combinations of epsilon and mu,
@@ -125,18 +90,5 @@ def generate_disconnected_nodes_matrix(N_runs, N_nodes, time_steps, epsilon_rang
             writer.writerow([epsilon] + matrix[i])
     
     print(f"Matrix saved to {output_file}")
-
-#usage
-if __name__ == "__main__":
-    # Parameters
-    N_RUNS = 5           # Number of simulations per parameter combination
-    N_NODES = 2000       # Number of nodes in each graph
-    TIME_STEPS = 100     # Number of time steps
-    EPSILON_RANGE = (0, 0.5, 51)  # Epsilon values from 0 to 0.5 (51 steps)
-    MU_RANGE = (0, 0.5, 51)       # Mu values from 0 to 0.5 (51 steps)
-    OUTPUT_FILE = "disconnected_nodes_matrix.csv"
-
-    # Generate the matrix and save to file
-    generate_disconnected_nodes_matrix(N_RUNS, N_NODES, TIME_STEPS, EPSILON_RANGE, MU_RANGE, OUTPUT_FILE)
 
 
