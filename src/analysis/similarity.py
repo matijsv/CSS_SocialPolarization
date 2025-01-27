@@ -1,4 +1,4 @@
-'''Groups functions for analyzing the similarity of opinions between neighbors in a graph.'''
+'''Functions for analyzing the similarity of opinions between neighbors in a graph.'''
 
 import numpy as np
 import pandas as pd

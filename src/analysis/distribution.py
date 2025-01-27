@@ -1,4 +1,4 @@
-'''Groups functions for analysis of opinion distribution in the network.'''
+'''Functions for analysis of opinion distribution in the network.'''
 
 import numpy as np
 from scipy.signal import find_peaks

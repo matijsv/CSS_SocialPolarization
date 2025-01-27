@@ -1,4 +1,5 @@
 import matplotlib as plt
+import networkx as nx
 
 def plot_communities(epsilon_values, communities):
     """
@@ -66,3 +67,23 @@ def plot_neighbor_similarity(epsilon_values, similarities):
     plt.grid(True)
     plt.legend()
     plt.show()
+    
+def plot_graph(g):
+    """
+    Plots the graph with nodes colored by opinion.
+
+    Args:
+        g (networkx.Graph): Graph to plot.
+    """
+    if g.number_of_nodes() > 0:
+        opinions = nx.get_node_attributes(g, 'opinion')
+        pos = nx.spring_layout(g)
+
+        fig, ax = plt.subplots(figsize=(8, 8))
+
+        # Draw nodes with color based on opinion
+        nx.draw_networkx_nodes(g, pos, node_color=list(opinions.values()), cmap=plt.cm.viridis, node_size=10)
+        nx.draw_networkx_edges(g, pos, alpha=0.3)
+
+        fig.colorbar(plt.cm.ScalarMappable(cmap=plt.cm.viridis), ax=ax, label='Opinion')
+        plt.show()

@@ -1,4 +1,4 @@
-'''Groups functions for analyzing the number of communities and modularity of graphs.'''
+'''Functions for analyzing the number of communities and modularity of graphs.'''
 
 import csv
 import numpy as np

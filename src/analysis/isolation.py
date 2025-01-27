@@ -1,4 +1,4 @@
-''' Groups functions for analysis of disconnected nodes in the network. '''
+'''Functions for analysis of disconnected nodes in the network. '''
 
 import csv
 import numpy as np

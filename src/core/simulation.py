@@ -1,4 +1,5 @@
-''' Core model functions '''
+''' Core model functions.
+Refer to the paper for more details on the model: https://www.nature.com/articles/srep40391'''
 
 import random
 import networkx as nx
@@ -46,7 +47,7 @@ def initialize_graph(N):
     nx.set_node_attributes(g, opinions, 'opinion')
     return g
 
-def run_sim(N, T, mu, epsilon, plot=False, progress_bar=False):
+def run_sim(N, T, mu, epsilon):
     '''
     Runs simulation until T time steps and returns the final graph.
     
@@ -92,25 +93,5 @@ def run_sim(N, T, mu, epsilon, plot=False, progress_bar=False):
                         new_neighbor = random.choice(list(g.nodes()))
                     g.remove_edge(node, neighbor)
                     g.add_edge(node, new_neighbor)
-
-        if progress_bar:
-            progress = (t + 1) / T
-            bar_length = 60
-            block = int(round(bar_length * progress))
-            text = f"\rProgress: [{'#' * block + '-' * (bar_length - block)}] {progress * 100:.2f}%"
-            print(text, end="")
-
-    if plot:
-        opinions = nx.get_node_attributes(g, 'opinion')
-        pos = nx.spring_layout(g)
-
-        fig, ax = plt.subplots(figsize=(8, 8))
-
-        # Draw nodes with color based on opinion
-        nx.draw_networkx_nodes(g, pos, node_color=list(opinions.values()), cmap=plt.cm.viridis, node_size=10)
-        nx.draw_networkx_edges(g, pos, alpha=0.3)
-
-        fig.colorbar(plt.cm.ScalarMappable(cmap=plt.cm.viridis), ax=ax, label='Opinion')
-        plt.show()
 
     return g, g_init
