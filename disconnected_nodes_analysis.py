@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import networkx as nx
+import csv
 from utils import get_graphs
 
 def count_disconnected_nodes(graph):
