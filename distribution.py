@@ -18,7 +18,7 @@ def opinions_variance(N_runs, N_nodes, time_steps, epsilon, mu):
     """
 
     #run the simulation
-    all_opinions, _ = utils.get_opinion_hist(N_runs, N_nodes, time_steps, epsilon, mu, exclude_loners=False)
+    all_opinions, _ , _ = utils.get_opinion_hist(N_runs, N_nodes, time_steps, epsilon, mu, exclude_loners=False)
 
     #calculate variance from all opinions
     flattened_opinions = [opinion for run in all_opinions for opinion in run]

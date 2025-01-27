@@ -4,6 +4,7 @@ import simulation
 import distribution
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from scipy.signal import find_peaks
 
 # all_opinions, avg_histogram = utils.get_opinion_hist(5, 2000, 10, 0.4, 0.25)
@@ -62,7 +63,6 @@ from scipy.signal import find_peaks
 ####### EXPERIMENT 3 #########
 #varing both parameters - heatmap of the variance
 
-
 # variance_matrix = []
 
 # epsilon_values = np.linspace(0,0.5,51)
@@ -105,16 +105,47 @@ from scipy.signal import find_peaks
 
 ####### EXPERIMENT 5 #########
 
-miu_values = np.linspace(0,0.5,51)
-number_excluded = []
+# miu_values = np.linspace(0,0.5,51)
+# number_excluded = []
 
-for i in miu_values:
-    all_opinions, avg_histogram, isolated = utils.get_opinion_hist(5, 2000, 50, 0.45, i)
-    number_excluded.append(isolated)
+# for i in miu_values:
+#     all_opinions, avg_histogram, isolated = utils.get_opinion_hist(5, 2000, 50, 0.45, i)
+#     number_excluded.append(isolated)
 
-plt.figure(figsize=(10, 6))
-plt.plot(miu_values, number_excluded, marker='o', color = "blue")
-plt.xlabel('Miu values')
-plt.ylabel('Number of isolated nodes')
-plt.grid()
-plt.show()
+# plt.figure(figsize=(10, 6))
+# plt.plot(miu_values, number_excluded, marker='o', color = "blue")
+# plt.xlabel('Miu values')
+# plt.ylabel('Number of isolated nodes')
+# plt.grid()
+# plt.show()
+
+######## EXPERIMENT 6 #########
+#generating data to heatmap - variance 
+
+variance_matrix = [] 
+
+epsilon_values = np.linspace(0, 0.5, 51)
+miu_values = np.linspace(0, 0.5, 51)
+
+for j in epsilon_values:
+    variance_values = []
+    for i in miu_values:
+        var = distribution.opinions_variance(5, 2000, 10, j, i) 
+        variance_values.append(var)
+    variance_matrix.append(variance_values)
+
+variance_matrix = np.array(variance_matrix)
+
+#Saving to Data Frame 
+df = pd.DataFrame(
+    variance_matrix,
+    index=[f"{epsilon:.2f}" for epsilon in epsilon_values],  # Rows - epsilon values
+    columns=[f"{miu:.2f}" for miu in miu_values]  # Columns - miu values
+)
+df.index.name = "epsilon/mu"
+
+# Saving to CSV
+filename = "variance_heatmap_data.csv"
+df.to_csv(filename)
+
+print(f"Data saved to {filename}")
