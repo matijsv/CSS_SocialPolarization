@@ -2,10 +2,6 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-
 def plot_heatmap(file_path, image_title):
     """
     Function to generate a heatmap from a CSV file and save it as an image.
@@ -32,6 +28,3 @@ def plot_heatmap(file_path, image_title):
     plt.savefig("heatmap.png", dpi=300)
 
     print(f"Heatmap saved")
-
-#Example usage (for variance)
-plot_heatmap("variance_heatmap_data.csv", "Heatmap of the Variance")
