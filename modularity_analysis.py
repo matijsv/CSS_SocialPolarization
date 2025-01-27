@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import csv
 import networkx as nx
 from utils import get_graphs
 from networkx.algorithms.community import modularity
@@ -84,3 +85,62 @@ if __name__ == "__main__":
 
     # Plot the results
     plot_modularity(EPSILON_VALUES, modularities)
+
+#function to generate heatmaps
+def generate_modularity_matrix(N_runs, N_nodes, time_steps, epsilon_range, mu_range, output_file):
+    """
+    Generates a 51x51 matrix of average modularity values for combinations of epsilon and mu,
+    and saves the result to a CSV file.
+
+    Args:
+        N_runs (int): Number of simulations per parameter combination.
+        N_nodes (int): Number of nodes in each graph.
+        time_steps (int): Number of time steps.
+        epsilon_range (tuple): Range of epsilon values (start, end, steps).
+        mu_range (tuple): Range of mu values (start, end, steps).
+        output_file (str): File path to save the resulting CSV file.
+    """
+    # Generate 51 values for epsilon and mu
+    epsilon_values = np.linspace(epsilon_range[0], epsilon_range[1], epsilon_range[2])
+    mu_values = np.linspace(mu_range[0], mu_range[1], mu_range[2])
+
+    # Initialize an empty matrix
+    matrix = []
+
+    for epsilon in epsilon_values:
+        row = []
+        print(f"Analyzing modularity for epsilon = {epsilon:.3f}")
+        
+        for mu in mu_values:
+            print(f"  Analyzing modularity for mu = {mu:.3f}")
+            
+            # Analyze modularity for the given epsilon and mu
+            avg_modularities = analyze_modularity(N_runs, N_nodes, time_steps, mu, [epsilon])
+            row.append(avg_modularities[0])  # Extract single result for epsilon
+        
+        # Append the row to the matrix
+        matrix.append(row)
+    
+    # Save the matrix to a CSV file
+    with open(output_file, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["epsilon \\ mu"] + list(mu_values))  # Header row
+        for i, epsilon in enumerate(epsilon_values):
+            writer.writerow([epsilon] + matrix[i])
+    
+    print(f"Matrix saved to {output_file}")
+
+# usage
+if __name__ == "__main__":
+    # Parameters
+    N_RUNS = 5           # Number of simulations per parameter combination
+    N_NODES = 2000       # Number of nodes in each graph
+    TIME_STEPS = 100     # Number of time steps
+    EPSILON_RANGE = (0, 0.5, 51)  # Epsilon values from 0 to 0.5 (51 steps)
+    MU_RANGE = (0, 0.5, 51)       # Mu values from 0 to 0.5 (51 steps)
+    OUTPUT_FILE = "modularity_matrix.csv"
+
+    # Generate the matrix and save to file
+    generate_modularity_matrix(N_RUNS, N_NODES, TIME_STEPS, EPSILON_RANGE, MU_RANGE, OUTPUT_FILE)
+
+
