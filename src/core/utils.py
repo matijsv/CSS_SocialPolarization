@@ -39,9 +39,10 @@ def get_opinion_hist(n_runs, n_nodes, time_steps, epsilon, mu, exclude_loners=Fa
         epsilon: (float bounds: [0,1]) threshold for opinion distance 
         mu: (float bounds: [0,1]) parameter for adjusting opinions
     Returns:
-        tuple containing:
+        triple containing:
             all_opinions: array of arrays of opinions, shape (n_runs, n_nodes)
             average_histogram: average histogram of opinions, length 100
+            avg_isolated: average number of isolated nodes
     
     Example usage:
         # If you want to plot the average histogram of opinions
@@ -59,11 +60,11 @@ def get_opinion_hist(n_runs, n_nodes, time_steps, epsilon, mu, exclude_loners=Fa
     '''
     all_histograms = []
     all_opinions = []
-
+    all_isolated = []
     for _ in range(n_runs):
         # Run the simulation. Extract and store opinions
         g, _ = run_sim(n_nodes, T=time_steps, epsilon=epsilon, mu=mu)
-        isolated = len(list(nx.isolates(g)))
+        all_isolated.append(len(list(nx.isolates(g))))
         if exclude_loners:
             g.remove_nodes_from(list(nx.isolates(g)))
         opinions = nx.get_node_attributes(g, 'opinion').values()
@@ -73,5 +74,6 @@ def get_opinion_hist(n_runs, n_nodes, time_steps, epsilon, mu, exclude_loners=Fa
         all_histograms.append(hist)
 
     avg_histogram = np.mean(all_histograms, axis=0) # Average the histograms
+    avg_isolated = np.mean(all_isolated) # Average the number of isolated nodes
+    return all_opinions, avg_histogram, avg_isolated
 
-    return all_opinions, avg_histogram, isolated
