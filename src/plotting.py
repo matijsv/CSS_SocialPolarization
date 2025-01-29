@@ -111,3 +111,39 @@ def create_subplots(data, x_index, titles, x_label, y_labels):
     
     plt.tight_layout()
     plt.show()
+    
+def create_heatmap_from_csv(file_path, value_column, x_coord_column, y_coord_column, image_title, parameter):
+    """
+    Function to create a heatmap from a CSV file with user-defined columns for values and coordinates.
+    
+    Args:
+        file_path (str) : Path to the CSV file containing the data.
+        value_column (str) : Name of the column to be used for heatmap values.
+        x_coord_column (str) : Name of the column to be used for x-axis coordinates.
+        y_coord_column (str) : Name of the column to be used for y-axis coordinates.
+        image_title (str) : Desired title of the generated image.
+        parameter (str) : Title for the legend on the right-hand side of the heatmap.
+    """
+    # Load data from the CSV file
+    data = pd.read_csv(file_path)
+    
+    # Pivot the data to create a matrix for the heatmap
+    heatmap_data = data.pivot(index=y_coord_column, columns=x_coord_column, values=value_column)
+    
+    # Reverse the y-axis
+    heatmap_data = heatmap_data.iloc[::-1]
+    
+    # Plot a heatmap
+    plt.figure(figsize=(16, 14))
+    fig = sns.heatmap(heatmap_data, annot=False, cmap='magma', cbar_kws={'label': parameter})
+    
+    plt.title(image_title, fontsize=20, pad=20)
+    plt.xlabel(x_coord_column, labelpad=9, fontsize=16)
+    plt.ylabel(y_coord_column, labelpad=9, fontsize=16)
+    cbar = fig.collections[0].colorbar
+    cbar.set_label(parameter, fontsize=16)
+    
+    # Save the heatmap
+    plt.savefig(image_title, dpi=300)
+    
+    print("Heatmap saved")
