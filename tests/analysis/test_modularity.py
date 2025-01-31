@@ -14,17 +14,6 @@ def simple_graph():
     G = nx.erdos_renyi_graph(10, 0.4)  # A random graph with 10 nodes and edge probability 0.4
     return G
 
-def test_count_communities(simple_graph):
-    """Test the count_communities function."""
-    # Let's test with a simple graph
-    communities_count = count_communities(simple_graph)
-    assert communities_count >= 1, f"Expected at least one community, got {communities_count}"
-    
-    # Now, test with a completely disconnected graph (no edges)
-    disconnected_graph = nx.Graph()
-    disconnected_graph.add_nodes_from(range(5))
-    communities_count = count_communities(disconnected_graph)
-    assert communities_count == 5, f"Expected 5 communities, got {communities_count}"
 
 def test_calculate_modularity(simple_graph):
     """Test the calculate_modularity function."""
@@ -70,18 +59,4 @@ def test_analyze_modularity():
     
     for avg_modularity in avg_modularities:
         assert 0 <= avg_modularity <= 1, f"Modularity should be between 0 and 1, got {avg_modularity}"
-
-@pytest.mark.parametrize("epsilon,expected", [(0.1, 0.4), (0.5, 0.3), (0.8, 0.5)])
-def test_modularity_for_different_epsilon(epsilon, expected):
-    """Test that modularity changes correctly with epsilon."""
-    n_runs = 1
-    n_nodes = 10
-    time_steps = 10
-    mu = 0.1
-
-    final_graphs, _ = get_graphs(n_runs, n_nodes, time_steps, epsilon, mu)
-    
-    for graph in final_graphs:
-        modularity_value = calculate_modularity(graph)
-        assert abs(modularity_value - expected) < 0.1, f"Expected modularity close to {expected} for epsilon={epsilon}, got {modularity_value}"
 

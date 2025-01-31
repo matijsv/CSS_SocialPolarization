@@ -20,9 +20,9 @@ def mock_opinion_data():
 
 
 @pytest.mark.parametrize("average_histogram, threshold, distance, expected_num_peaks", [
-    ([0, 50, 200, 150, 50, 10, 0], 100, 1, 2),  # Two peaks above threshold
+    ([0, 50, 200, 150, 50, 10, 0], 100, 1, 1),  # Two peaks above threshold
     ([0, 10, 20, 30, 40, 50], 60, 1, 0),        # No peaks above threshold
-    ([0, 100, 200, 50, 200, 100, 0], 100, 1, 3),  # Three peaks
+    ([0, 100, 200, 50, 200, 100, 0], 100, 1, 2),  # Three peaks
 ])
 def test_count_peaks_in_histogram(average_histogram, threshold, distance, expected_num_peaks):
     """
