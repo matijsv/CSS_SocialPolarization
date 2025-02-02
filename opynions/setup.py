@@ -7,6 +7,6 @@ setup(
     author='Matijs Verloo',
     author_email='matijs.verloo@gmail.com',
     description='A package for exploring rewiring opinion dynamics models',
-    packages=['opynions'],    
+    packages=find_packages(exclude=['tests']),    
     install_requires=['matplotlib','numpy','pandas','scipy','seaborn','networkx'],
 )
