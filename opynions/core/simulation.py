@@ -53,21 +53,21 @@ def UCM_adjust_opinion(i, j, mu, epsilon):
 
     return i_new, j_new
 
-def initialize_graph(N, m_generator=2):
+def initialize_graph(N, m_ba=2):
     '''Creates a Scale-Free graph with N nodes and uniformly random opinions between 0 and 1
     
     Args:
         N (int): number of nodes
-        m_generator (int): affects graph generation, see networkx.barabasi_albert_graph()
+        m_ba (int): affects graph generation, see networkx.barabasi_albert_graph()
     Returns:
         g: networkx graph
     '''
-    g = nx.barabasi_albert_graph(N, m_generator) 
+    g = nx.barabasi_albert_graph(N, m_ba) 
     opinions = {node: random.uniform(0, 1) for node in g.nodes()} # uniformly random opinions [0,1]
     nx.set_node_attributes(g, opinions, 'opinion')
     return g
 
-def run_sim(N, T, epsilon, mu, m_generator=2):
+def run_sim(N, T, epsilon, mu, m_ba=2):
     '''Runs simulation until T time steps and returns the final graph.
     
     Args:
@@ -75,7 +75,7 @@ def run_sim(N, T, epsilon, mu, m_generator=2):
         T (int): number of time steps
         mu (float): parameter for adjusting opinions, bounds [0,1]
         epsilon (float): threshold for opinion distance, bounds [0,1]
-        m_generator (int): affects graph generation, see networkx.barabasi_albert_graph()
+        m_ba (int): affects graph generation, see networkx.barabasi_albert_graph()
         
     Returns: 
         g (networkx.Graph): final graph
@@ -86,7 +86,7 @@ def run_sim(N, T, epsilon, mu, m_generator=2):
     assert 0 <= mu <= 1, f"mu out of bounds [0,1]: {mu}"
     assert 0 <= epsilon <= 1, f"epsilon out of bounds [0,1]: {epsilon}"
 
-    g = initialize_graph(N, m_generator)
+    g = initialize_graph(N, m_ba)
     g_init = g.copy()
     for t in range(T):
         # For each node in a random order

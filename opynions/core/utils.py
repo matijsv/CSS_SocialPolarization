@@ -4,8 +4,7 @@ import networkx as nx
 import numpy as np
 from opynions.core.simulation import run_sim
 
-
-def get_graphs(n_runs, n_nodes, time_steps, epsilon, mu, m_generator=2):
+def get_graphs(n_runs, n_nodes, time_steps, epsilon, mu, m_ba=2):
     '''Simulates N_Runs networks and returns the final and initial graphs
     
     Args:
@@ -14,7 +13,7 @@ def get_graphs(n_runs, n_nodes, time_steps, epsilon, mu, m_generator=2):
         time_steps: (int) number of time steps
         epsilon: (float bounds: [0,1]) threshold for opinion distance 
         mu: (float bounds: [0,1]) parameter for adjusting opinions
-        m_generator: affects graph generation, see networkx.barabasi_albert_graph
+        m_ba (int): affects graph generation, see networkx.barabasi_albert_graph
     Returns:
         tuple containing:
             all_final_graphs: list of final graphs, length n_runs
@@ -23,13 +22,13 @@ def get_graphs(n_runs, n_nodes, time_steps, epsilon, mu, m_generator=2):
     all_final_graphs = []
     all_initial_graphs = []
     for _ in range(n_runs):
-        g_final, g_init = run_sim(n_nodes, time_steps, epsilon, mu, m_generator)
+        g_final, g_init = run_sim(n_nodes, time_steps, epsilon, mu, m_ba)
         all_final_graphs.append(g_final)
         all_initial_graphs.append(g_init)
 
     return all_final_graphs, all_initial_graphs
 
-def get_opinion_hist(n_runs, n_nodes, time_steps, epsilon, mu, exclude_loners=False, m_generator=2):
+def get_opinion_hist(n_runs, n_nodes, time_steps, epsilon, mu, exclude_loners=False, m_ba=2):
     '''Simulates N_Runs networks and returns an array of arrays of opinions
     and the average distribution histogram
     
@@ -39,6 +38,7 @@ def get_opinion_hist(n_runs, n_nodes, time_steps, epsilon, mu, exclude_loners=Fa
         time_steps: (int) number of time steps
         epsilon: (float bounds: [0,1]) threshold for opinion distance 
         mu: (float bounds: [0,1]) parameter for adjusting opinions
+        m_ba (int): affects graph generation, see networkx.barabasi_albert_graph()
     Returns:
         triple containing:
             all_opinions: array of arrays of opinions, shape (n_runs, n_nodes)
@@ -64,7 +64,7 @@ def get_opinion_hist(n_runs, n_nodes, time_steps, epsilon, mu, exclude_loners=Fa
     all_isolated = []
     for _ in range(n_runs):
         # Run the simulation. Extract and store opinions
-        g, _ = run_sim(n_nodes, time_steps, epsilon, mu, m_generator)
+        g, _ = run_sim(n_nodes, time_steps, epsilon, mu, m_ba)
         all_isolated.append(len(list(nx.isolates(g))))
         if exclude_loners:
             g.remove_nodes_from(list(nx.isolates(g)))

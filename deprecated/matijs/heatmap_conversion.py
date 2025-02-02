@@ -1,4 +1,5 @@
-from opynions.plotting import create_heatmap_from_csv, plot_heatmap
+from opynions.analysis.utils import create_heatmap_from_csv
+from opynions.plotting import plot_heatmap
 import csv
 import os
 

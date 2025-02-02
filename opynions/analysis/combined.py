@@ -7,7 +7,7 @@ from networkx.algorithms.community import greedy_modularity_communities
 from opynions.core.utils import get_graphs
 from opynions.analysis.similarity import compute_neighbor_similarity
 
-def combined_analysis(n_runs, n_nodes, time_steps, epsilon, mu, m_generator=2):
+def combined_analysis(n_runs, n_nodes, time_steps, epsilon, mu, m_ba=2):
     """
     Combines all analyses into one function, optimizes by reusing graph object,
     isolates lists and communities list. NOTE: for a single combination of epsilon and mu.
@@ -37,7 +37,7 @@ def combined_analysis(n_runs, n_nodes, time_steps, epsilon, mu, m_generator=2):
     all_modularity = 0
     all_similarity = 0
     
-    graphs, _ = get_graphs(n_runs, n_nodes, time_steps, epsilon, mu, m_generator)
+    graphs, _ = get_graphs(n_runs, n_nodes, time_steps, epsilon, mu, m_ba)
     
     for g in graphs:
         
