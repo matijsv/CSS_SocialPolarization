@@ -1,8 +1,8 @@
 
-matplotlib.pyplot
+matplotlib
 numpy
 pandas
-scipy.signal
+scipy
 seaborn
 networkx
 pytest
