@@ -28,7 +28,7 @@ def mock_get_graphs(n_runs, n_nodes, time_steps, epsilon, mu):
 # Test for analyze_disconnected_nodes
 def test_analyze_disconnected_nodes(monkeypatch):
     # Mock the get_graphs function
-    monkeypatch.setattr("src.analysis.isolation.get_graphs", mock_get_graphs)
+    monkeypatch.setattr("opynions.analysis.isolation.get_graphs", mock_get_graphs)
 
     n_runs = 2
     n_nodes = 5
