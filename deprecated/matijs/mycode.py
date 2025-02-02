@@ -84,7 +84,7 @@ def plot_graph(g):
 
 from opynions.analysis.combined import combined_analysis
 
-from opynions.analysis.multiprocessing import multiprocess_mod_comm_both, multiprocess_all_both
+from opynions.analysis.multiprocessing import multiprocess_mod_comm_both, multiprocess_all
 import time
 import numpy as np
 start_time = time.time()
@@ -119,7 +119,7 @@ from opynions.plotting import dicts_to_list_of_lists, save_sublists_to_csv, crea
 
 """ epsilon_values = np.linspace(0,0.5,10) 
 mu_values = np.linspace(0,0.5,10)
-list_of_dicts = multiprocess_all_both(epsilon_values, mu_values)
+list_of_dicts = multiprocess_all(epsilon_values, mu_values)
 
 list_of_lists, keys = dicts_to_list_of_lists(list_of_dicts)
 save_sublists_to_csv(list_of_lists, keys, f'raw_data/testing_all.csv')

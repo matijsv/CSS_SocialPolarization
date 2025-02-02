@@ -4,7 +4,7 @@ import networkx as nx
 from networkx.algorithms.community import modularity
 from networkx.algorithms.community import greedy_modularity_communities
 from opynions.core.utils import get_graphs
-
+from opynions.settings import MODULARITY_RES
 def count_communities(graph):
     """
     Counts the number of communities in a graph based on community detection.
@@ -17,7 +17,7 @@ def count_communities(graph):
     # Use the greedy modularity communities detection algorithm
     # Remove isolates (nodes with no edges) from the graph
     graph.remove_nodes_from(list(nx.isolates(graph)))
-    communities = greedy_modularity_communities(graph, resolution=0.1, best_n=7)
+    communities = greedy_modularity_communities(graph, resolution=MODULARITY_RES, best_n=7)
     # Count the number of communities
     num_communities = len(communities)
     return num_communities

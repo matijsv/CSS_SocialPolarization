@@ -6,6 +6,7 @@ from networkx.algorithms.community import modularity
 from networkx.algorithms.community import greedy_modularity_communities
 from opynions.core.utils import get_graphs
 from opynions.analysis.similarity import compute_neighbor_similarity
+from opynions.settings import MODULARITY_RES
 
 def combined_analysis(n_runs, n_nodes, time_steps, epsilon, mu, m_ba=2):
     """
@@ -25,10 +26,10 @@ def combined_analysis(n_runs, n_nodes, time_steps, epsilon, mu, m_ba=2):
     Returns:
         dict: containing all analyses with keys:
             - "variance": Variance of opinions across all runs.
-            - "avg_isolated": Average number of isolated nodes across all runs.
-            - "avg_num_communities": Average number of communities across all runs.
-            - "avg_modularity": Average modularity score across all runs.
-            - "avg_similarity": Average neighbor similarity across all runs.
+            - "num_isolates": Average number of isolated nodes across all runs.
+            - "num_communities": Average number of communities across all runs.
+            - "modularity": Average modularity score across all runs.
+            - "similarity": Average neighbor similarity across all runs.
     """
     
     all_opinions = []
@@ -51,7 +52,7 @@ def combined_analysis(n_runs, n_nodes, time_steps, epsilon, mu, m_ba=2):
         # remove isolates from graph
         g.remove_nodes_from(isolates_list)
         # isolate and count communities
-        communities = greedy_modularity_communities(g, resolution=0.001, best_n=7)
+        communities = greedy_modularity_communities(g, resolution=MODULARITY_RES, best_n=7)
         all_num_communities += len(communities)
         # use same list for modularity value
         all_modularity += modularity(g, communities)
@@ -71,9 +72,9 @@ def combined_analysis(n_runs, n_nodes, time_steps, epsilon, mu, m_ba=2):
     avg_similarity = all_similarity / num_runs
     
 
-    return {"variance": variance, "avg_isolated": avg_isolated, 
-            "avg_num_communities": avg_num_communities, "avg_modularity":avg_modularity,
-            "avg_similarity": avg_similarity}
+    return {"variance": variance, "num_isolates": avg_isolated, 
+            "num_communities": avg_num_communities, "modularity":avg_modularity,
+            "similarity": avg_similarity}
     
 def modules_communities_analysis(n_runs, n_nodes, time_steps, epsilon, mu):
     """
