@@ -1,5 +1,5 @@
 # opynions
-### - developed for the Echo Chambers project - A package for exploring the parameter space of the Rewirining Unbounded Confidence Model (RUCM) ###
+### Developed for the Echo Chambers project - A package for exploring the parameter space of the Rewiring Unbounded Confidence Model (RUCM) ###
 
 ### Our goal ###
 This project builds on the findings of Del Vicario et al., (2017). The goal of the project was to implement Rewirining Unbounded Confidence Model (RUCM) on a Network and study the final distributions of opinions. The study was particularly focused on studing the phase lines between unimodal, bimodal and multimodal distributions of opinions using four metrics: variance, number of disconected nodes, opinion similarity and modularity. The hypothesis of the project was that similar phase lines will be observed when using other metrics. 
