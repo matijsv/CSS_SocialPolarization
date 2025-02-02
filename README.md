@@ -5,7 +5,12 @@
 This project builds on the findings of Del Vicario et al. (2017). The goal of the project was to implement the Rewirining Unbounded Confidence Model (RUCM) on a Network and study the final distributions of opinions. The study was particularly focused on studying the phase lines between unimodal, bimodal, and multimodal distributions of opinions using four metrics: variance, number of disconnected nodes, opinion similarity, and modularity. The hypothesis of the project was that similar phase lines would be observed when using other metrics. 
 
 ### Technical details ####
-The parameters for all experiments have been 2000 nodes over 100 timesteps (each timestep every node is updated in random order). We studied parameter space for mu and epsilon in [0,0.5]. Results were averaged over 5 runs. Pytest for this project is implemented and it is working. There are assert lines implemented in the code (excluding deprecated folder). The repository is structured as a module with a setup.py file. 
+The parameters for all experiments have been 2000 nodes over 100 timesteps (each timestep every node is updated in random order). We studied parameter space for mu and epsilon in [0,0.5]. Results were averaged over 5 runs.
+### Regarding Bonuses ###
+Pytest for this project is implemented and it is working. (Github workflow auto-testing as well)
+There are assert lines implemented in the code (excluding deprecated folder).
+The project is structured as a module and ' pip install . ' works
+Auto-generated docs are available in the docs folder, run/host index.html to see them
 
 ### References: ###
 [1] Del Vicario, M., Scala, A., Caldarelli, G., Stanley, H. E., & Quattrociocchi, W. (2017). Modeling confirmation bias and polarization. Scientific Reports, 7(1), 40391. https://doi.org/10.1038/srep40391
