@@ -69,7 +69,7 @@ def test_run_sim():
     mu = 0.1
     epsilon = 0.2
 
-    g_final, g_init = run_sim(N, T, mu, epsilon)
+    g_final, g_init = run_sim(N, T, epsilon, mu)
 
     # Verify the graphs
     assert len(g_final.nodes) == N
@@ -88,4 +88,4 @@ def test_run_sim():
 ])
 def test_run_sim_invalid_input(N, T, mu, epsilon):
     with pytest.raises(AssertionError):
-        run_sim(N, T, mu, epsilon)
+        run_sim(N, T, epsilon, mu)

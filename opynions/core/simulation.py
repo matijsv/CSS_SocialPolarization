@@ -5,8 +5,6 @@ import random
 import networkx as nx
 import matplotlib.pyplot as plt
 
-M_GRAPH = 2 # DEFAULT = 2, results in a power law between 2 and 3, as per the paper
-
 def rho(x):
     '''Function used to guarantee periodic boundary conditions as per eq 1 in paper
     
@@ -55,20 +53,21 @@ def UCM_adjust_opinion(i, j, mu, epsilon):
 
     return i_new, j_new
 
-def initialize_graph(N):
+def initialize_graph(N, m_generator=2):
     '''Creates a Scale-Free graph with N nodes and uniformly random opinions between 0 and 1
     
     Args:
         N (int): number of nodes
+        m_generator (int): affects graph generation, see networkx.barabasi_albert_graph()
     Returns:
         g: networkx graph
     '''
-    g = nx.barabasi_albert_graph(N, M_GRAPH) 
+    g = nx.barabasi_albert_graph(N, m_generator) 
     opinions = {node: random.uniform(0, 1) for node in g.nodes()} # uniformly random opinions [0,1]
     nx.set_node_attributes(g, opinions, 'opinion')
     return g
 
-def run_sim(N, T, mu, epsilon):
+def run_sim(N, T, epsilon, mu, m_generator=2):
     '''Runs simulation until T time steps and returns the final graph.
     
     Args:
@@ -76,6 +75,8 @@ def run_sim(N, T, mu, epsilon):
         T (int): number of time steps
         mu (float): parameter for adjusting opinions, bounds [0,1]
         epsilon (float): threshold for opinion distance, bounds [0,1]
+        m_generator (int): affects graph generation, see networkx.barabasi_albert_graph()
+        
     Returns: 
         g (networkx.Graph): final graph
         g_init (networkx.Graph): initial graph
@@ -85,7 +86,7 @@ def run_sim(N, T, mu, epsilon):
     assert 0 <= mu <= 1, f"mu out of bounds [0,1]: {mu}"
     assert 0 <= epsilon <= 1, f"epsilon out of bounds [0,1]: {epsilon}"
 
-    g = initialize_graph(N)
+    g = initialize_graph(N, m_generator)
     g_init = g.copy()
     for t in range(T):
         # For each node in a random order
@@ -108,10 +109,8 @@ def run_sim(N, T, mu, epsilon):
                 if abs(i_new - j_new) > epsilon:
                     new_neighbor = random.choice(list(g.nodes()))
                     # ensure new neighbor is not the same as the node itself.
-                    counter = 0
                     while new_neighbor == node:
                         new_neighbor = random.choice(list(g.nodes()))
-                        # if this fails too many times just choose the same neighbor
                     g.remove_edge(node, neighbor)
                     g.add_edge(node, new_neighbor)
 
