@@ -2,7 +2,7 @@
 
 import networkx as nx
 import numpy as np
-from src.core.simulation import run_sim
+from opynions.core.simulation import run_sim
 
 
 def get_graphs(n_runs, n_nodes, time_steps, epsilon, mu):

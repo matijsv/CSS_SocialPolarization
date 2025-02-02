@@ -4,8 +4,8 @@ import numpy as np
 import networkx as nx
 from networkx.algorithms.community import modularity
 from networkx.algorithms.community import greedy_modularity_communities
-from src.core.utils import get_graphs
-from src.analysis.similarity import compute_neighbor_similarity
+from opynions.core.utils import get_graphs
+from opynions.analysis.similarity import compute_neighbor_similarity
 
 def combined_analysis(n_runs, n_nodes, time_steps, epsilon, mu):
     """

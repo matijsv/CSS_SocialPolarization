@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
-from src.core.utils import get_graphs, get_opinion_hist
-from src.analysis.isolation import count_disconnected_nodes, analyze_disconnected_nodes
+from opynions.core.utils import get_graphs, get_opinion_hist
+from opynions.analysis.isolation import count_disconnected_nodes, analyze_disconnected_nodes
 
 def test_end_to_end_complex_simulation():
     """

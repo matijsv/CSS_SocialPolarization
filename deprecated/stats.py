@@ -1,5 +1,5 @@
 from matplotlib import pyplot as plt
-from src.core.simulation import run_sim
+from opynions.core.simulation import run_sim
 import networkx as nx
 from scipy.signal import find_peaks
 import numpy as np

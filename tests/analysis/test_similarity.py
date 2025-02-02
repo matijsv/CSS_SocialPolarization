@@ -2,12 +2,12 @@ import pytest
 import networkx as nx
 import numpy as np
 import pandas as pd
-from src.analysis.similarity import (
+from opynions.analysis.similarity import (
     compute_neighbor_similarity,
     analyze_neighbor_similarity,
     opinion_matrix_experiment
 )
-from src.core.utils import get_graphs
+from opynions.core.utils import get_graphs
 
 
 @pytest.fixture

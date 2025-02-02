@@ -3,7 +3,7 @@
 import csv
 import numpy as np
 import networkx as nx
-from src.core.utils import get_graphs
+from opynions.core.utils import get_graphs
 
 def count_disconnected_nodes(graph):
     """

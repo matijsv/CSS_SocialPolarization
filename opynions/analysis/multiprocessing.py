@@ -2,8 +2,8 @@
 
 import multiprocessing as mp
 import itertools
-from src.analysis.combined import combined_analysis, modules_communities_analysis
-from src.analysis.distribution import opinions_variance
+from opynions.analysis.combined import combined_analysis, modules_communities_analysis
+from opynions.analysis.distribution import opinions_variance
 
 N_RUNS = 5
 N_NODES = 2000

@@ -1,6 +1,6 @@
 import pytest
 import networkx as nx
-from src.core.simulation import rho, UCM_adjust_opinion, initialize_graph, run_sim
+from opynions.core.simulation import rho, UCM_adjust_opinion, initialize_graph, run_sim
 
 # Test cases for rho
 @pytest.mark.parametrize("x, expected", [

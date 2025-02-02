@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import networkx as nx
-from src.core.utils import get_graphs
+from opynions.core.utils import get_graphs
 
 def compute_neighbor_similarity(graph):
     """

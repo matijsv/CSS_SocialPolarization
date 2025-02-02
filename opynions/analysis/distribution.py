@@ -2,7 +2,7 @@
 
 import numpy as np
 from scipy.signal import find_peaks
-from src.core.utils import get_opinion_hist
+from opynions.core.utils import get_opinion_hist
 
 def opinions_variance(n_runs, n_nodes, time_steps, epsilon, mu):
     """

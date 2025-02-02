@@ -2,7 +2,7 @@
 
 import numpy as np
 import pandas as pd
-from src.core.utils import get_graphs
+from opynions.core.utils import get_graphs
 
 def compute_neighbor_similarity(graph):
     """

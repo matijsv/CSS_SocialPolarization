@@ -1,14 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from src.analysis.multiprocessing import multiprocess_variance_epsilon
-from src.core.utils import get_opinion_hist
-import src.core.simulation
+from opynions.analysis.multiprocessing import multiprocess_variance_epsilon
+from opynions.core.utils import get_opinion_hist
+import opynions.core.simulation
 
 M_list = np.linspace(1,50,2)
 epsilon_values = np.linspace(0.01,0.48,30)
 list_of_lists = []
 for M in M_list:
-    src.core.simulation.M_GRAPH = M
+    opynions.core.simulation.M_GRAPH = M
     list_of_variances = multiprocess_variance_epsilon(epsilon_values)
     list_of_lists.append(list_of_variances)
 

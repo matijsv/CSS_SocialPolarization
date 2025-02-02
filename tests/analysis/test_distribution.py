@@ -1,8 +1,8 @@
 import pytest
 import numpy as np
 from scipy.signal import find_peaks
-from src.core.utils import get_opinion_hist
-from src.analysis.distribution import opinions_variance, count_peaks_in_histogram
+from opynions.core.utils import get_opinion_hist
+from opynions.analysis.distribution import opinions_variance, count_peaks_in_histogram
 
 @pytest.fixture
 def mock_opinion_data():

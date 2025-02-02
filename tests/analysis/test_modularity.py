@@ -1,12 +1,12 @@
 import pytest
 import networkx as nx
-from src.analysis.modularity import (
+from opynions.analysis.modularity import (
     count_communities,
     analyze_communities,
     calculate_modularity,
     analyze_modularity
 )
-from src.core.utils import get_graphs
+from opynions.core.utils import get_graphs
 
 @pytest.fixture
 def simple_graph():

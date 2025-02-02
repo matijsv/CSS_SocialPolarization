@@ -53,7 +53,7 @@ def plot_heatmaps(folder_path, image_title, parameters, reverse_columns=True):
 
 # plot_heatmaps(folder_path, 'heatmap_overview', ['Disconnecteds', 'Variance', 'Similarity'])
 
-from src.core.utils import get_graphs
+from opynions.core.utils import get_graphs
 import networkx as nx
 
 def plot_graph(g):
@@ -81,9 +81,9 @@ def plot_graph(g):
 #graph, _ = get_graphs(1, 2000, 100, epsilon, mu)
 #plot_graph(graph[0])
 
-from src.analysis.combined import combined_analysis
+from opynions.analysis.combined import combined_analysis
 
-from src.analysis.multiprocessing import multiprocess_mod_comm_both, multiprocess_all_both
+from opynions.analysis.multiprocessing import multiprocess_mod_comm_both, multiprocess_all_both
 import time
 import numpy as np
 start_time = time.time()
@@ -97,7 +97,7 @@ list_of_dicts = multiprocess_epsilon([0.8])
 end_time = time.time()
 print(f"Time taken multiprocessing single: {end_time - start_time} seconds")
 
-from src.plotting import create_heatmap_from_csv, dicts_to_list_of_lists, save_sublists_to_csv, create_subplots
+from opynions.plotting import create_heatmap_from_csv, dicts_to_list_of_lists, save_sublists_to_csv, create_subplots
 
 #start_time = time.time()
 #epsilon_values = np.linspace(0,0.5,51) 

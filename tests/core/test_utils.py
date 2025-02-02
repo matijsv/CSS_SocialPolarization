@@ -1,6 +1,6 @@
 import pytest
 import networkx as nx
-from src.core.utils import get_graphs
+from opynions.core.utils import get_graphs
 
 def test_get_graphs():
     n_runs = 3

@@ -5,7 +5,7 @@ import numpy as np
 import networkx as nx
 from networkx.algorithms.community import modularity
 from networkx.algorithms.community import greedy_modularity_communities
-from src.core.utils import get_graphs
+from opynions.core.utils import get_graphs
 
 def count_communities(graph):
     """

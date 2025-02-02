@@ -1,6 +1,6 @@
 import pytest
 import networkx as nx
-from src.analysis.isolation import count_disconnected_nodes, analyze_disconnected_nodes
+from opynions.analysis.isolation import count_disconnected_nodes, analyze_disconnected_nodes
 
 # Test for count_disconnected_nodes
 def test_count_disconnected_nodes():
