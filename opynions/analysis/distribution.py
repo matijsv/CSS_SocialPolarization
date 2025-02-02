@@ -48,35 +48,3 @@ def count_peaks_in_histogram(average_histogram, threshold=100, distance=10):
     num_peaks = len(peak_indices)
 
     return num_peaks
-
-
-""" ######## EXPERIMENT 6 #########
-#generating data to heatmap - variance 
-
-variance_matrix = [] 
-
-epsilon_values = np.linspace(0, 0.5, 51)
-miu_values = np.linspace(0, 0.5, 51)
-
-for j in epsilon_values:
-    variance_values = []
-    for i in miu_values:
-        var = distribution.opinions_variance(5, 2000, 10, j, i) 
-        variance_values.append(var)
-    variance_matrix.append(variance_values)
-
-variance_matrix = np.array(variance_matrix)
-
-#Saving to Data Frame 
-df = pd.DataFrame(
-    variance_matrix,
-    index=[f"{epsilon:.2f}" for epsilon in epsilon_values],  # Rows - epsilon values
-    columns=[f"{miu:.2f}" for miu in miu_values]  # Columns - miu values
-)
-df.index.name = "epsilon/mu"
-
-# Saving to CSV
-filename = "variance_heatmap_data.csv"
-df.to_csv(filename)
-
-print(f"Data saved to {filename}") """

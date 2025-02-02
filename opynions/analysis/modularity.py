@@ -1,7 +1,5 @@
 '''Functions for analyzing the number of communities and modularity of graphs.'''
 
-import csv
-import numpy as np
 import networkx as nx
 from networkx.algorithms.community import modularity
 from networkx.algorithms.community import greedy_modularity_communities
@@ -109,49 +107,3 @@ def analyze_modularity(n_runs, n_nodes, time_steps, mu, epsilon_values):
         avg_modularities.append(avg_modularity)
 
     return avg_modularities
-
-#Func for generating the heatmap
-def generate_modularity_matrix(n_runs, n_nodes, time_steps, epsilon_range, mu_range, output_file):
-    """
-    Generates a 51x51 matrix of average modularity values for combinations of epsilon and mu,
-    and saves the result to a CSV file.
-
-    Args:
-        n_runs (int): Number of simulations per parameter combination.
-        n_nodes (int): Number of nodes in each graph.
-        time_steps (int): Number of time steps.
-        epsilon_range (tuple): Range of epsilon values (start, end, steps).
-        mu_range (tuple): Range of mu values (start, end, steps).
-        output_file (str): File path to save the resulting CSV file.
-    """
-    # Generate 51 values for epsilon and mu
-    epsilon_values = np.linspace(epsilon_range[0], epsilon_range[1], epsilon_range[2])
-    mu_values = np.linspace(mu_range[0], mu_range[1], mu_range[2])
-
-    # Initialize an empty matrix
-    matrix = []
-
-    for epsilon in epsilon_values:
-        row = []
-        print(f"Analyzing modularity for epsilon = {epsilon:.3f}")
-
-        for mu in mu_values:
-            print(f"  Analyzing modularity for mu = {mu:.3f}")
-
-            # Analyze modularity for the given epsilon and mu
-            avg_modularities = analyze_modularity(n_runs, n_nodes, time_steps, mu, [epsilon])
-            row.append(avg_modularities[0])  # Extract single result for epsilon
-
-        # Append the row to the matrix
-        matrix.append(row)
-
-    # Save the matrix to a CSV file
-    with open(output_file, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(["epsilon \\ mu"] + list(mu_values))  # Header row
-        for i, epsilon in enumerate(epsilon_values):
-            writer.writerow([epsilon] + matrix[i])
-    
-    print(f"Matrix saved to {output_file}")
-
-

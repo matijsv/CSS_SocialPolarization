@@ -1,7 +1,5 @@
 '''Functions for analyzing the similarity of opinions between neighbors in a graph.'''
 
-import numpy as np
-import pandas as pd
 from opynions.core.utils import get_graphs
 
 def compute_neighbor_similarity(graph):
@@ -61,30 +59,3 @@ def analyze_neighbor_similarity(n_runs, n_nodes, time_steps, mu, epsilon_values)
         avg_similarities.append(avg_similarity)
 
     return avg_similarities
-
-def opinion_matrix_experiment(n_runs, n_nodes, time_steps, mu_values, epsilon_values, output_file):
-    """
-    Investigates the average neighbor similarity by varying both epsilon and mu.
-    Saves results as a 51x51 matrix to a CSV file.
-
-    Args:
-        n_runs (int): Number of simulation runs per parameter combination.
-        n_nodes (int): Number of nodes in the graph.
-        time_steps (int): Number of time steps for each simulation.
-        mu_values (list or np.ndarray): Values of mu to investigate.
-        epsilon_values (list or np.ndarray): Values of epsilon to investigate.
-        output_file (str): File path to save the CSV results.
-    """
-    results_matrix = np.zeros((len(mu_values), len(epsilon_values)))  # Initialize matrix
-
-    for i, epsilon in enumerate(epsilon_values):  # Outer loop: epsilon (horizontal)
-        for j, mu in enumerate(mu_values):       # Inner loop: mu (vertical)
-            print(f"Running simulation for epsilon={epsilon:.3f}, mu={mu:.3f}")
-            # Analyze neighbor similarity
-            avg_similarity = analyze_neighbor_similarity(n_runs, n_nodes, time_steps, mu, [epsilon])[0]
-            results_matrix[j, i] = avg_similarity  # Store result in matrix
-
-    # Save results to CSV
-    df = pd.DataFrame(results_matrix, index=mu_values, columns=epsilon_values)
-    df.to_csv(output_file)
-    print(f"Results saved to {output_file}")
