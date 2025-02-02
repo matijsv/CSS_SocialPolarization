@@ -1,4 +1,5 @@
-# CSS_SocialPolarization
+# opynions
+# A package for exploring the parameter space of the Rewirining Unbounded Confidence Model (RUCM)
 
 Note: The parameters for all experiments have been 2000 nodes over 100 timesteps (each timestep every node is updated in random order). Bounds miu and epsilon [0,0.5]. Results were averaged over 5 runs.
 
