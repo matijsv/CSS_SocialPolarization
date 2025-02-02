@@ -17,7 +17,8 @@ def count_communities(graph):
     # Use the greedy modularity communities detection algorithm
     # Remove isolates (nodes with no edges) from the graph
     graph.remove_nodes_from(list(nx.isolates(graph)))
-    communities = greedy_modularity_communities(graph, resolution=MODULARITY_RES, best_n=7)
+    best_n = min(len(graph.nodes()), 7)
+    communities = greedy_modularity_communities(graph, resolution=MODULARITY_RES, best_n=best_n)
     # Count the number of communities
     num_communities = len(communities)
     return num_communities
