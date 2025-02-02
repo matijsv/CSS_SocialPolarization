@@ -8,9 +8,9 @@ def get_graphs(n_runs, n_nodes, time_steps, epsilon, mu, m_ba=2):
     '''Simulates N_Runs networks and returns the final and initial graphs
     
     Args:
-        n_runs: (int) number of runs
-        n_nodes: (int) number of nodes
-        time_steps: (int) number of time steps
+        n_runs: (int) number of graphs generated
+        n_nodes: (int) number of nodes within the network
+        time_steps: (int) number of time steps to progress simulation for
         epsilon: (float bounds: [0,1]) threshold for opinion distance 
         mu: (float bounds: [0,1]) parameter for adjusting opinions
         m_ba (int): affects graph generation, see networkx.barabasi_albert_graph

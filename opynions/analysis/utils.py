@@ -1,4 +1,4 @@
-'''Utility functions for data handling'''
+'''Utility functions for data handling and plotting'''
 
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -37,8 +37,6 @@ def list_of_dicts_to_csv(dict_list, file_path):
     
     # Save the DataFrame to a CSV file
     df.to_csv(file_path, index=False)
-    
-    print(f"Data saved to {file_path}")
 
     return data, keys
 
@@ -66,24 +64,26 @@ def create_heatmap_from_csv(file_path, value_column, x_coord_column, y_coord_col
     heatmap_data = heatmap_data.iloc[::-1]
 
     # Plot a heatmap
-    plt.figure(figsize=(16, 14))
+    plt.figure(figsize=(4, 4))
+    plt.gca().xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x:.1f}'))
+    plt.gca().yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f'{y:.1f}'))
     plt.minorticks_off()
     plt.minorticks_off()
-    plt.tick_params(labelsize=20)
+    plt.tick_params(labelsize=10)
+    
     fig = sns.heatmap(heatmap_data, annot=False, cmap='magma')#, cbar_kws={'label': parameter})
 
-    plt.title(value_column, fontsize=48, pad=60)
-    plt.xlabel(x_coord_column, labelpad=27, fontsize=30)
-    plt.ylabel(y_coord_column, labelpad=27, fontsize=30)
+    plt.title(value_column, fontsize=20, pad=30)
+    plt.xlabel(x_coord_column, labelpad=10, fontsize=10)
+    plt.ylabel(y_coord_column, labelpad=10, fontsize=10)
 
     cbar = fig.collections[0].colorbar
-    cbar.ax.tick_params(labelsize=30)  # Increase colorbar tick label size
+    cbar.ax.tick_params(labelsize=10)  # Increase colorbar tick label size
 
     # Save the heatmap
     if save:
         plt.savefig(image_path, dpi=300)
-
-    print("Heatmap saved")
+        print("Heatmap saved")    
 
 
 def plot_graph(g, include_colorbar=True, exclude_isolates=False, save_file=False, file_path='graph_plot.png'):
@@ -106,16 +106,16 @@ def plot_graph(g, include_colorbar=True, exclude_isolates=False, save_file=False
         opinions = nx.get_node_attributes(g, 'opinion')
         pos = nx.spring_layout(g)
 
-        fig, ax = plt.subplots(figsize=(8, 8))
+        fig, ax = plt.subplots(figsize=(4, 4))
 
         # Draw nodes with color based on opinion
-        nx.draw_networkx_nodes(g, pos, node_color=list(opinions.values()), cmap=plt.cm.viridis, node_size=10)
+        nx.draw_networkx_nodes(g, pos, node_color=list(opinions.values()), cmap=plt.cm.viridis, node_size=5)
         nx.draw_networkx_edges(g, pos, alpha=0.3)
 
         if include_colorbar:
             cbar = fig.colorbar(plt.cm.ScalarMappable(cmap=plt.cm.viridis), ax=ax, label='Opinion')
-            cbar.ax.yaxis.label.set_size(30)  # Increase colorbar label size
-            cbar.ax.tick_params(labelsize=30)  # Increase colorbar label size
+            cbar.ax.yaxis.label.set_size(10)  # Increase colorbar label size
+            cbar.ax.tick_params(labelsize=10)  # Increase colorbar label size
         if save_file:
             plt.savefig(file_path, dpi=300)
         plt.show()
@@ -147,7 +147,6 @@ def plot_subplots_from_csv(csv_file, x_axis_column, save_file=False, file_path='
     # Drop the column that is not used
     columns_to_drop = [col for col in ['epsilon', 'mu'] if col != x_axis_column]
     set_parameter_value = df[columns_to_drop].iloc[0, 0]
-    print(set_parameter_value)
     df = df.drop(columns=columns_to_drop)
     
     # Create subplots
@@ -165,4 +164,27 @@ def plot_subplots_from_csv(csv_file, x_axis_column, save_file=False, file_path='
     plt.tight_layout()
     if save_file:
         plt.savefig(file_path, dpi=300)
+    
+
+def plot_opinion_distribution(g, save_file=False, file_path='opinion_distribution.png'):
+    """
+    Plots the opinion distribution histogram from a graph and (optionally) saves it to a file.
+
+    Args:
+        g (networkx.Graph): Graph with 'opinion' attribute for nodes.
+        save_file (bool, optional): Whether to save the histogram to a file. Default False.
+        file_path (str, optional): Path to save the histogram image. Default 'opinion_distribution.png'.
+    """
+    opinions = nx.get_node_attributes(g, 'opinion').values()
+    
+    plt.figure(figsize=(2, 1))
+    plt.hist(opinions, bins=100, color='blue', edgecolor='black')
+    plt.title('Opinion Distribution')
+    plt.xlabel('Opinion')
+    plt.ylabel('Frequency')
+    
+    if save_file:
+        plt.savefig(file_path, dpi=300)
+        print(f"Opinion distribution histogram saved to {file_path}")
+    
     plt.show()
