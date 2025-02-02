@@ -4,6 +4,7 @@ uses the combined analysis function in opynions.analysis.combined. '''
 import multiprocessing as mp
 import itertools
 from opynions.analysis.combined import combined_analysis
+from opynions.analysis.distribution import opinions_variance
 
 def worker_all_both_params(epsilon, mu, n_runs, n_nodes, time_steps, m_ba):
         ''' 
@@ -37,3 +38,15 @@ def multiprocess_all(epsilon_values, mu_values, n_runs, n_nodes, time_steps, m_b
         list_of_dicts = pool.starmap(worker_all_both_params, [(epsilon, mu, n_runs, n_nodes, time_steps, m_ba) for epsilon, mu in param_grid])
 
     return list_of_dicts
+
+def worker_variance_epsilons(epsilon, m_ba):
+    ''' Process manager for variance analysis used in finite size scaling analysis.'''
+    variance = opinions_variance(10, 200, 100, epsilon, 0.48, m_ba=m_ba)
+    return variance
+
+def multiprocess_variance_epsilon(epsilon_values, m_ba):
+    ''' Performs only variance analysis, to be used in finite size scaling analysis.'''
+    num_workers = min(mp.cpu_count(), len(epsilon_values))
+    with mp.Pool(num_workers) as pool:
+        list_of_variances = pool.starmap(worker_variance_epsilons, [(epsilon, m_ba) for epsilon in epsilon_values])
+    return list_of_variances

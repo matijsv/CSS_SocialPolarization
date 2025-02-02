@@ -4,7 +4,7 @@ import numpy as np
 from scipy.signal import find_peaks
 from opynions.core.utils import get_opinion_hist
 
-def opinions_variance(n_runs, n_nodes, time_steps, epsilon, mu):
+def opinions_variance(n_runs, n_nodes, time_steps, epsilon, mu, m_ba=2):
     """
     Function to calculate variance of all opinions.
 
@@ -21,7 +21,7 @@ def opinions_variance(n_runs, n_nodes, time_steps, epsilon, mu):
 
     #run the simulation
     all_opinions, _ , _ = get_opinion_hist(n_runs, n_nodes, time_steps, epsilon,
-                                           mu, exclude_loners=False)
+                                           mu, exclude_loners=False, m_ba=m_ba)
 
     #calculate variance from all opinions
     flattened_opinions = [opinion for run in all_opinions for opinion in run]
