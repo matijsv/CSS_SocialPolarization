@@ -3,11 +3,12 @@
 import multiprocessing as mp
 import itertools
 from src.analysis.combined import combined_analysis, modules_communities_analysis
+from src.analysis.distribution import opinions_variance
 
 N_RUNS = 5
 N_NODES = 2000
 TIME_STEPS = 100
-DEFAULT_MU = 0.36
+DEFAULT_MU = 0.48
 
 def worker_combined_epsilons(epsilon):
     results_dict = combined_analysis(N_RUNS, N_NODES, TIME_STEPS, epsilon, DEFAULT_MU)
@@ -24,6 +25,23 @@ def worker_mod_comm_both(epsilon, mu):
     results_dict['epsilon'] = epsilon
     results_dict['mu'] = mu
     return results_dict
+
+def worker_mod_comm_both(epsilon, mu):
+    results_dict = combined_analysis(N_RUNS, N_NODES, TIME_STEPS, epsilon, mu)
+    results_dict['epsilon'] = epsilon
+    results_dict['mu'] = mu
+    return results_dict
+
+def worker_variance_epsilons(epsilon):
+    variance = opinions_variance(10, 100, TIME_STEPS, epsilon, DEFAULT_MU)
+    return variance
+
+def multiprocess_variance_epsilon(epsilon_values):
+    num_workers = min(mp.cpu_count(), len(epsilon_values))
+    with mp.Pool(num_workers) as pool:
+        list_of_variances = pool.map(worker_variance_epsilons, epsilon_values)
+
+    return list_of_variances
 
 def multiprocess_all_epsilon(epsilon_values):
     
@@ -42,6 +60,14 @@ def multiprocess_mod_comm_epsilon(epsilon_values):
     return list_of_dicts
 
 def multiprocess_mod_comm_both(epsilon_values, mu_values):
+    param_grid = list(itertools.product(epsilon_values, mu_values))
+    num_workers = min(mp.cpu_count(), len(param_grid))
+    with mp.Pool(num_workers) as pool:
+        list_of_dicts = pool.starmap(worker_mod_comm_both, param_grid)
+
+    return list_of_dicts
+
+def multiprocess_all_both(epsilon_values, mu_values):
     param_grid = list(itertools.product(epsilon_values, mu_values))
     num_workers = min(mp.cpu_count(), len(param_grid))
     with mp.Pool(num_workers) as pool:

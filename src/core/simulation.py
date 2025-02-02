@@ -5,6 +5,8 @@ import random
 import networkx as nx
 import matplotlib.pyplot as plt
 
+M_GRAPH = 2 # DEFAULT = 2, results in a power law between 2 and 3, as per the paper
+
 def rho(x):
     '''Function used to guarantee periodic boundary conditions as per eq 1 in paper
     
@@ -61,7 +63,7 @@ def initialize_graph(N):
     Returns:
         g: networkx graph
     '''
-    g = nx.barabasi_albert_graph(N, 2) # results in a power law between 2 and 3, as per the paper
+    g = nx.barabasi_albert_graph(N, M_GRAPH) 
     opinions = {node: random.uniform(0, 1) for node in g.nodes()} # uniformly random opinions [0,1]
     nx.set_node_attributes(g, opinions, 'opinion')
     return g
@@ -105,9 +107,11 @@ def run_sim(N, T, mu, epsilon):
                 # rewire if opinions are too far apart
                 if abs(i_new - j_new) > epsilon:
                     new_neighbor = random.choice(list(g.nodes()))
-                    # ensure new neighbor is not the same as the old one, the node itself, or one of the node's current neighbors
-                    while new_neighbor == node or new_neighbor in g.neighbors(node):
+                    # ensure new neighbor is not the same as the node itself.
+                    counter = 0
+                    while new_neighbor == node:
                         new_neighbor = random.choice(list(g.nodes()))
+                        # if this fails too many times just choose the same neighbor
                     g.remove_edge(node, neighbor)
                     g.add_edge(node, new_neighbor)
 

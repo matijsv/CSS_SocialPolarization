@@ -1,33 +1,73 @@
 import pandas as pd
 import seaborn as sns
+import networkx as nx
 import matplotlib.pyplot as plt
 
-def plot_heatmap(file_path, image_title, parameter, reverse_columns = True):
+def plot_graph(g, include_colorbar=True, exclude_isolates=False, file_path='graph_plot.png'):
+    """
+    Plots the graph with nodes colored by opinion and saves it to a file.
+
+    Args:
+        g (networkx.Graph): Graph to plot.
+        include_colorbar (bool): Whether to include the colorbar in the plot.
+        exclude_isolates (bool): Whether to exclude isolated nodes from the plot.
+        file_path (str): Path to save the plot image.
+    """
+    if g.number_of_nodes() > 0:
+        if exclude_isolates:
+            g = g.copy()
+            isolates = list(nx.isolates(g))
+            g.remove_nodes_from(isolates)
+        
+        opinions = nx.get_node_attributes(g, 'opinion')
+        pos = nx.spring_layout(g)
+
+        fig, ax = plt.subplots(figsize=(8, 8))
+
+        # Draw nodes with color based on opinion
+        nx.draw_networkx_nodes(g, pos, node_color=list(opinions.values()), cmap=plt.cm.viridis, node_size=10)
+        nx.draw_networkx_edges(g, pos, alpha=0.3)
+
+        if include_colorbar:
+            cbar = fig.colorbar(plt.cm.ScalarMappable(cmap=plt.cm.viridis), ax=ax, label='Opinion')
+            cbar.ax.yaxis.label.set_size(30)  # Increase colorbar label size
+            cbar.ax.tick_params(labelsize=30)  # Increase colorbar label size
+        
+        plt.savefig(file_path, dpi=300)
+        plt.show()
+
+
+def plot_heatmap(file_path, image_title, reverse_columns=True):
     """
     Function to generate a heatmap from a CSV file and save it as an image.
     
     Args:
         file_path (str) : Path to the CSV file containing the data.
         image_title (str) : Desired title of the generated image.
-        parameter (str) : What is the parameter varied in the matrix.
-            This is also a title for the legend on the right-hand side of the heatmap. 
         reverse_columns (bool) : If True the order of columns are reversed
-            to make the plot look like the the plot in the paper. 
+            to make the plot look like the plot in the paper. 
     """
     # Load data from the CSV file
     data = pd.read_csv(file_path, index_col=0)
+    
+    # Flip the axes of the data
     if reverse_columns:
         data = data.iloc[::-1]
-
+    
     # Plot a heatmap
     plt.figure(figsize=(16, 14)) 
-    fig = sns.heatmap(data, annot=False, cmap='magma', cbar_kws={'label': parameter})
+    plt.minorticks_off()
+    plt.minorticks_off()
+    plt.tick_params(labelsize=20)
+    fig = sns.heatmap(data, annot=False, cmap='magma')#, cbar_kws={'label': parameter})
 
-    plt.title(image_title, fontsize=20, pad=20)
-    plt.xlabel('Mu Values', labelpad = 9, fontsize=16)
-    plt.ylabel('Epsilon Values', labelpad = 9, fontsize=16)
+    plt.title(image_title, fontsize=48, pad=60)
+    plt.xlabel('Mu', labelpad=27, fontsize=30)
+    plt.ylabel('Epsilon', labelpad=27, fontsize=30)
+    
     cbar = fig.collections[0].colorbar
-    cbar.set_label(parameter, fontsize=16)
+    cbar.ax.tick_params(labelsize=30)  # Increase colorbar tick label size
+    
 
     # Save the heatmap
     plt.savefig(image_title, dpi=300)
@@ -112,7 +152,7 @@ def create_subplots(data, x_index, titles, x_label, y_labels):
     plt.tight_layout()
     plt.show()
     
-def create_heatmap_from_csv(file_path, value_column, x_coord_column, y_coord_column, image_title, parameter):
+def create_heatmap_from_csv(file_path, value_column, x_coord_column, y_coord_column, image_title):
     """
     Function to create a heatmap from a CSV file with user-defined columns for values and coordinates.
     
@@ -134,16 +174,21 @@ def create_heatmap_from_csv(file_path, value_column, x_coord_column, y_coord_col
     heatmap_data = heatmap_data.iloc[::-1]
     
     # Plot a heatmap
-    plt.figure(figsize=(16, 14))
-    fig = sns.heatmap(heatmap_data, annot=False, cmap='magma', cbar_kws={'label': parameter})
+    plt.figure(figsize=(16, 14)) 
+    plt.minorticks_off()
+    plt.minorticks_off()
+    plt.tick_params(labelsize=20)
+    fig = sns.heatmap(heatmap_data, annot=False, cmap='magma')#, cbar_kws={'label': parameter})
+
+    plt.title(image_title, fontsize=48, pad=60)
+    plt.xlabel(x_coord_column, labelpad=27, fontsize=30)
+    plt.ylabel(y_coord_column, labelpad=27, fontsize=30)
     
-    plt.title(image_title, fontsize=20, pad=20)
-    plt.xlabel(x_coord_column, labelpad=9, fontsize=16)
-    plt.ylabel(y_coord_column, labelpad=9, fontsize=16)
     cbar = fig.collections[0].colorbar
-    cbar.set_label(parameter, fontsize=16)
+    cbar.ax.tick_params(labelsize=30)  # Increase colorbar tick label size
     
+
     # Save the heatmap
     plt.savefig(image_title, dpi=300)
-    
+
     print("Heatmap saved")
