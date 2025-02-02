@@ -1,4 +1,5 @@
 # opynions
+# - developed for the Echo Chambers project -
 # A package for exploring the parameter space of the Rewirining Unbounded Confidence Model (RUCM)
 
 ### Our goal ###
